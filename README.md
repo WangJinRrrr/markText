@@ -1,202 +1,72 @@
-<p align="center"><img src="docs/assets/logo-small.png" alt="MarkText" width="100" height="100"></p>
+<p align="center"><img src="docs/assets/logo-small.png" alt="markText" width="100" height="100"></p>
 
 <h1 align="center">markText</h1>
 
-> This project is a modified distribution derived from the upstream [MarkText](https://github.com/marktext/marktext) project. The upstream project and its contributors are acknowledged with respect.
+<p align="center">A local-first Markdown notebook editor for Windows.</p>
 
-<div align="center">
-  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
-    <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
-  </a>
-</div>
-<div align="center">
-  <strong>:high_brightness: A lightweight Markdown notebook :crescent_moon:</strong><br>
-  A local-first, open-source Markdown notebook focused on fast writing and clear file organization.<br>
-  <sub>Available for Linux, macOS and Windows.</sub>
-</div>
+> markText is an independent modified distribution derived from the upstream [MarkText](https://github.com/marktext/marktext) project. The upstream project, its license, and its contributors are acknowledged with respect.
 
-<br>
+## What Changed
 
-<div align="center">
-  <!-- License -->
-  <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/marktext/marktext.svg" alt="LICENSE">
-  </a>
-  <!-- Downloads total -->
-  <a href="https://github.com/marktext/marktext/releases">
-    <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="total download">
-  </a>
-  <!-- Downloads latest release -->
-  <a href="https://github.com/marktext/marktext/releases/latest">
-    <img src="https://img.shields.io/github/downloads/marktext/marktext/latest/total.svg" alt="latest download">
-  </a>
-  <!-- sponsors -->
-  <a href="https://opencollective.com/marktext">
-    <img src="https://opencollective.com/marktext/tiers/silver-sponsors/badge.svg?label=SilverSponsors&color=brightgreen" alt="sponsors">
-  </a>
-</div>
-
-<div align="center">
-  <h3>
-    <a href="https://github.com/marktext/marktext">
-      Website
-    </a>
-    <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
-      Features
-    </a>
-    <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
-      Downloads
-    </a>
-    <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
-      Development
-    </a>
-    <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
-      Contribution
-    </a>
-  </h3>
-</div>
-
-<div align="center">
-  <sub>Translations:</sub>
-  <a href="docs/i18n/README-zh_cn.md#readme">
-    <span>:cn:</span>
-  </a>
-  <a href="docs/i18n/README-zh_tw.md#readme">
-    <span>:taiwan:</span>
-  </a>
-  <a href="docs/i18n/README-jp.md#readme">
-    <span>:jp:</span>
-  </a>
-  <a href="docs/i18n/README-fr.md#readme">
-    <span>:fr:</span>
-  </a>
-  <a href="docs/i18n/README-tr.md#readme">
-    <span>:tr:</span>
-  </a>
-  <a href="docs/i18n/README-es.md#readme">
-    <span>:es:</span>
-  </a>
-  <a href="docs/i18n/README-pt.md#readme">
-    <span>:portugal:</span>
-  </a>
-  <a href="docs/i18n/README-kr.md#readme">
-    <span>:kr:</span>
-  </a>
-  <a href="docs/i18n/README-bn.md#readme">
-    <span>:bangladesh:</span>
-  </a>
-</div>
-
-<div align="center">
-  <sub>This Markdown notebook is built with ❤︎ by
-    <a href="https://github.com/Jocs">Jocs</a> and
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
-      contributors
-    </a>
-    .
-  </sub>
-</div>
-
-<br />
-
-<h2 align="center">Sponsors</h2>
-
-MarkText is an open-source Markdown notebook powered by the support of its community. If MarkText improves your workflow, please consider [sponsoring the project](https://github.com/sponsors/marktext). Thank you to all the sponsors ❤️
-
-**Special Sponsor**
-
-<table>
-<tr>
-<td width="182"><a href="https://serpapi.com/?utm_source=marktext"><img src="docs/assets/sponsors/serpapi.png" width="150"></a></td>
-<td align="left"><a href="https://serpapi.com/?utm_source=marktext">Scrape Google and other search engines from our fast, easy, and complete API.</a></td>
-</tr>
-</table>
-
-## Screenshot
-
-![](docs/assets/marktext.png?raw=true)
+- Windows-focused portable distribution named `markText`.
+- Repository-oriented file browsing and management from the sidebar.
+- Simplified application menus and settings entry.
+- Sidebar file-tree context menu for file operations.
+- Reading-area context menu focused on spelling and window always-on-top.
+- Local-first Markdown editing with no account or cloud service required.
 
 ## Features
 
-- Realtime preview (WYSIWYG) and a clean, minimal interface for distraction-free writing.
-- A keyboard-first notebook repository manager (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) for browsing, creating, renaming, copying, moving, deleting, revealing, and opening repository files.
-- A focused sidebar for repository navigation, in-folder search, and the current document's table of contents; open notes remain visible in the editor tab bar.
-- Support [CommonMark Spec](https://spec.commonmark.org) and [GitHub Flavored Markdown Spec](https://github.github.com/gfm/), with Markdown extensions such as KaTeX math, front matter, diagrams, and emojis.
-- Support paragraphs and inline style shortcuts to improve writing efficiency.
-- Local image persistence with relative-folder or path-based asset handling.
-- Output **HTML**, **PDF**, and print documents.
-- Various [themes](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark**, and more.
-- Various editing modes: **Source Code mode**, **Typewriter mode**, and **Focus mode**.
+- WYSIWYG Markdown editing with source-code mode.
+- CommonMark and GitHub Flavored Markdown support.
+- KaTeX math, Mermaid diagrams, front matter, code blocks, and tables.
+- Repository navigation, in-folder search, and table of contents.
+- Relative or path-based local image handling.
+- HTML, PDF, and print export.
+- Focus mode and typewriter mode.
+- Theme and editor preferences with categorized settings.
 
-## Download and Installation
+## Download
 
-![platform](https://img.shields.io/static/v1.svg?label=Platform&message=Linux%20x64%20|%20macOS%20x64%2Farm64%20|%20Windows%20x64%2Farm64&style=for-the-badge)
+Download the latest build from the [markText Releases](https://github.com/WangJinRrrr/markText/releases) page.
 
-|               ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)               |               ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)               |              ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)              |
-| :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
-| [![Download for macOS](https://img.shields.io/badge/macOS-Download-blue)](https://github.com/marktext/marktext/releases/latest) | [![Download for Windows](https://img.shields.io/badge/Windows-Download-blue)](https://github.com/marktext/marktext/releases/latest) | [![Download for Linux](https://img.shields.io/badge/Linux-Download-blue)](https://github.com/marktext/marktext/releases/latest) |
+For Windows x64, use the portable executable:
 
-Want to see new features of the latest version? Please refer to [CHANGELOG](https://marktext.me/docs/changelog).
-
-#### macOS
-
-Requires macOS 11 (Big Sur) or later. Universal builds aren't published — pick the matching `arm64` or `x64` installer.
-
-You can either download the latest `marktext-mac-(arm64|x64)-%version%.dmg` from the [release page](https://github.com/marktext/marktext/releases/latest) or install MarkText using [**homebrew cask**](https://github.com/caskroom/homebrew-cask). To use Homebrew-Cask you just need to have [Homebrew](https://brew.sh/) installed.
-
-```bash
-brew install --cask mark-text
+```text
+markText-win-x64-<version>.exe
 ```
 
-#### Windows
+The portable build does not require an installer. Place it in a directory you control and run it directly. User data is stored by Electron in the normal Windows application data location.
 
-Requires Windows 10 or 11. Both x64 and arm64 installers are published — pick the architecture that matches your machine.
+## Build From Source
 
-Simply download and install MarkText via the setup wizard (`marktext-win-(x64|arm64)-%version%-setup.exe`) and choose whether to install per-user or machine wide. Alternatively, install MarkText using a package manager such as [Chocolatey](https://chocolatey.org/) or [Winget](https://docs.microsoft.com/en-us/windows/package-manager/winget/).
+Requirements:
 
-To use Chocolatey, you need to have [Chocolatey](https://chocolatey.org/install) installed:
+- Windows 10 or later
+- Node.js 20.19 or later
+- pnpm 10 or later
 
-```bash
-choco install marktext
-```
-
-To use Winget, you need to have [Winget](https://docs.microsoft.com/en-us/windows/package-manager/winget/#install-winget) installed:
+Install dependencies and run the checks:
 
 ```bash
-winget install marktext
+pnpm install
+pnpm run typecheck
 ```
 
-#### Linux
+Build the Windows x64 portable package:
 
-Please follow the [Linux installation instructions](https://marktext.me/docs/installation).
+```bash
+pnpm run build:win:x64
+```
 
-#### Other
+The generated packages are written to `dist/`.
 
-All binaries for Linux, macOS and Windows can be downloaded from the [release page](https://github.com/marktext/marktext/releases/latest). If a version is unavailable for your system, then please open an [issue](https://github.com/marktext/marktext/issues).
+## Documentation
 
-## Development
-
-If you wish to build MarkText yourself, please check out our [build instructions](https://marktext.me/docs/dev/build).
-
-- [User documentation](https://marktext.me/docs/introduction)
-- [Developer documentation](https://marktext.me/docs/dev/overview)
-
-If you have any questions regarding MarkText, you are welcome to write an issue. When doing so please use the default format found when opening an issue. Of course, if you submit a PR directly, it will be greatly appreciated.
-
-## Contribution
-
-MarkText is in development, please make sure to read the [Contributing Guide](.github/CONTRIBUTING.md) before making a pull request. Want to add some features to MarkText? Refer to our [roadmap](https://github.com/marktext/marktext/projects) and open issues.
-
-## Contributors
-
-Thank you to all the people who have already contributed to MarkText[[contributors](https://github.com/marktext/marktext/graphs/contributors)].
-
-<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
+- [User documentation](packages/website/content/docs/README.md)
+- [Developer documentation](packages/website/content/docs/dev/overview.md)
+- [Upstream MarkText repository](https://github.com/marktext/marktext)
 
 ## License
 
-[**MIT**](LICENSE).
+markText remains distributed under the [MIT License](LICENSE). See the upstream project for the original copyright and contribution history.

@@ -1,6 +1,6 @@
-# MarkText Website
+# markText Documentation
 
-This package contains the official MarkText website and its user/developer documentation. It lives in the MarkText monorepo alongside the Electron desktop app and the Muya editor engine.
+This package contains the markText user and developer documentation. markText is a modified distribution derived from the upstream [MarkText](https://github.com/marktext/marktext) project.
 
 The site is built with Next.js and React, and renders the Markdown content under `content/docs/`. The documentation describes the current lightweight, local-first notebook application, including its repository manager, Markdown editor, themes, exports, and local image handling.
 
@@ -78,4 +78,4 @@ pnpm --filter marktext-website build
 
 ## License
 
-MarkText is distributed under the MIT License. See [`../../LICENSE`](../../LICENSE).
+markText is distributed under the MIT License. See [`../../LICENSE`](../../LICENSE). The upstream project and contributors are acknowledged in the repository root README.

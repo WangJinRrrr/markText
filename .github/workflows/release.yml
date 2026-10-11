@@ -1,4 +1,4 @@
-name: Release MarkText
+name: Release markText
 
 on:
   push:
@@ -134,7 +134,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: marktext-${{ matrix.name }}
+          name: markText-${{ matrix.name }}
           retention-days: 7
           if-no-files-found: error
           path: |
@@ -191,7 +191,7 @@ jobs:
               echo ""
             fi
             echo "## ⚠️ Note for macOS users"
-            echo "Builds are unsigned (no Apple Developer ID). After dragging MarkText into Applications, clear the quarantine flag once:"
+            echo "Builds are unsigned (no Apple Developer ID). After dragging markText into Applications, clear the quarantine flag once:"
             echo '```'
             echo 'xattr -d com.apple.quarantine /Applications/MarkText.app'
             echo '```'

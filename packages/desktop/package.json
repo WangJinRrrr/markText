@@ -1,6 +1,6 @@
 {
   "name": "marktext",
-  "version": "0.22.0-dev",
+  "version": "0.1.0",
   "description": "markText, a MarkText-derived Markdown notebook editor",
   "main": "./out/main/index.js",
   "author": {
