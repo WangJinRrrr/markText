@@ -13,6 +13,13 @@ export default function(keybindings: Keybindings): MenuItemConstructorOptions {
       }
     },
     {
+      label: t('menu.view.notebookRepositoryManager'),
+      accelerator: keybindings.getAccelerator('view.notebook-repository-manager') ?? undefined,
+      click(_menuItem, focusedWindow) {
+        actions.showNotebookRepositoryManager(focusedWindow as BrowserWindow | undefined)
+      }
+    },
+    {
       type: 'separator'
     },
     {

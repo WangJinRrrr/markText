@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: 차세대 마크다운 에디터 :crescent_moon:</strong><br>
-  속도와 사용성에 초점을 맞춘 단순하고 우아한 오픈 소스 마크다운 에디터.<br>
+  <strong>:high_brightness: 가벼운 Markdown 노트북 :crescent_moon:</strong><br>
+  빠른 작성과 명확한 파일 정리에 초점을 둔 로컬 우선 오픈 소스 Markdown 노트북입니다.<br>
   <sub>Linux, macOS 및 Windows에서 사용 가능합니다.</sub>
 </div>
 
@@ -126,13 +126,14 @@ MarkText는 커뮤니티의 지원으로 운영되는 오픈소스 Markdown 편�
 ## 기능
 
 - 실시간 미리보기(WYSIWYG)와 깔끔하고 단순한 인터페이스로 방해받지 않는 작성 경험을 제공합니다.
-- [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)을 지원하고, [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown)을 부분적으로 지원합니다.
+- [CommonMark Spec](https://spec.commonmark.org)과 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)을 지원합니다.
 - 수식(KaTeX), 프론트 매터, 이모지 등 마크다운 확장 기능.
 - 단락 및 인라인 스타일 단축키로 작성 효율을 높여 줍니다.
 - **HTML** 및 **PDF** 파일 출력.
 - 다양한 [테마](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark** 등.
 - 다양한 편집 모드: **소스 코드 모드**, **타자기 모드**, **포커스 모드**.
-- 클립보드에서 직접 이미지를 붙여넣기.
+- 키보드로 호출하는 노트 저장소 관리자(`Ctrl+Shift+F12` / `Cmd+Shift+F12`)로 파일 탐색, 생성, 이름 변경, 복사, 이동, 삭제 및 열기를 지원합니다.
+- 폴더 또는 경로를 통한 로컬 이미지 관리와 클립보드에서 직접 이미지 붙여넣기를 지원합니다.
 
 ## 다운로드 및 설치
 

@@ -24,7 +24,6 @@
       "export": "Экспорт",
       "exportHtml": "Экспорт в HTML",
       "exportPdf": "Экспорт в PDF",
-      "convertWithPandoc": "Конвертировать через Pandoc",
       "import": "Импорт",
       "print": "Печать",
       "closeTab": "Закрыть вкладку",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "Показать/скрыть оглавление",
       "reloadImages": "Обновить изображения",
       "showDeveloperTools": "Инструменты разработчика",
-      "reloadWindow": "Перезагрузить окно"
+      "reloadWindow": "Перезагрузить окно",
+      "notebookRepositoryManager": "Менеджер репозитория заметок"
     },
     "format": {
       "format": "Формат",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryName": "Имя относительной папки изображений",
         "autoNormalizeLineEndings": "Автоматически нормализовать концы строк при открытии файлов. Если отключено, файлы открываются как есть.",
         "fileSortOrder": "Порядок сортировки файлов в открытых папках: по возрастанию или убыванию.",
-        "openedFilesInSidebar": "Показывать открытые файлы на боковой панели.",
-        "showPandocConvert": "Показывать меню конвертации Pandoc. Требуется установленный Pandoc."
+        "openedFilesInSidebar": "Показывать открытые файлы на боковой панели."
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "Восстановить все открытые файлы и папки",
         "selectFolder": "Выбрать папку",
         "openBlankPage": "Открыть пустую страницу"
-      },
-      "pandoc": {
-        "title": "Конвертация Pandoc",
-        "description": "Показывать меню конвертации Pandoc",
-        "detailedDescription": "Требуется установленный Pandoc",
-        "found": "Найден: {path}",
-        "notFound": "Не найден",
-        "recheck": "Проверить снова"
       },
       "sidebar": {
         "title": "Боковая панель",
@@ -593,7 +584,6 @@
     "image": {
       "title": "Изображения",
       "actions": {
-        "upload": "Загрузить в облако",
         "folder": "Копировать в папку",
         "path": "Использовать абсолютный путь"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "Относительно папки",
         "relativeFolderName": "Имя относительной папки",
         "filenameNote": "Имя файла будет сгенерировано автоматически."
-      },
-      "uploader": {
-        "title": "Загрузчик изображений",
-        "currentUploader": "Текущий загрузчик: {name}",
-        "picgoNotInstalled": "PicGo не установлен",
-        "picgoInstalled": "PicGo установлен",
-        "picgoDetectionFailed": "Не удалось определить PicGo",
-        "debugInfo": "Отладочная информация",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "Выберите способ установки:",
-        "retestPicgo": "Проверить снова",
-        "lastDetectionTime": "Время последней проверки",
-        "picgoDetection": "Проверка PicGo",
-        "usageGuide": {
-          "title": "Краткое руководство по PicGo",
-          "step1": "Настроить загрузчик",
-          "step1Description": "Используйте следующую команду для настройки загрузчика PicGo:",
-          "step2": "Загрузить изображения",
-          "step2Description": "Используйте следующую команду для загрузки изображений:",
-          "step3": "Просмотреть конфигурацию",
-          "step3Description": "Используйте следующую команду для просмотра текущей конфигурации:",
-          "documentation": "Открыть полную документацию"
-        },
-        "lastSuccessTime": "Время последнего успеха",
-        "neverDetected": "Никогда не обнаружено",
-        "neverSuccessful": "Никогда не успешно",
-        "scriptDescription": "Описание скрипта",
-        "scriptLocation": "Расположение скрипта",
-        "save": "Сохранить",
-        "saveConfig": "Сохранить конфигурацию",
-        "scriptConfigSaved": "Конфигурация скрипта сохранена",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "CLI-скрипт"
-        },
-        "pleaseInstall": "Пожалуйста, установите",
-        "scriptPath": "Путь к скрипту"
       },
       "defaultBehavior": "Поведение по умолчанию после вставки или перетаскивания изображения в MarkText"
     },
@@ -885,7 +836,8 @@
       "reloadImages": "Обновить изображения",
       "textDirection": "Направление текста",
       "actualSize": "Реальный размер",
-      "devToggleDeveloperTools": "Переключить инструменты разработчика"
+      "devToggleDeveloperTools": "Переключить инструменты разработчика",
+      "notebookRepositoryManager": "Менеджер репозитория заметок"
     },
     "tabs": {
       "cycleForward": "Следующая вкладка",

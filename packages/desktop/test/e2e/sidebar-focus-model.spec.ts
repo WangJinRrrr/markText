@@ -5,10 +5,10 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 import { launchElectron } from './helpers'
 
-// The project tree is a DOM focus scope: clicking it takes focus (so F2 / Enter
-// / Delete act on the sidebar), clicking outside moves focus away but keeps the
-// selection, and clicking empty space inside clears the selection. Opening a
-// file from the tree keeps that focus; a double click hands it to the editor.
+// The project tree is a DOM focus scope: clicking it takes focus, clicking
+// outside moves focus away but keeps the selection, and clicking empty space
+// inside clears the selection. Opening a file from the tree keeps that focus;
+// a double click hands it to the editor.
 
 const treeHasFocus = (page: Page): Promise<boolean> =>
   page.evaluate(() => !!document.activeElement?.closest('.tree-wrapper'))

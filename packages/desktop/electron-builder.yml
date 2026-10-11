@@ -1,5 +1,5 @@
-appId: com.github.marktext.marktext
-productName: MarkText
+appId: com.github.wangjinrrrr.marktext
+productName: markText
 directories:
   buildResources: build
   output: ../../dist
@@ -122,14 +122,14 @@ fileAssociations:
     role: Editor
     icon: icons/md.ico
 win:
-  executableName: marktext
-  artifactName: 'marktext-win-${arch}-${version}.${ext}'
+  executableName: markText
+  artifactName: 'markText-win-${arch}-${version}.${ext}'
   target:
-    - target: 'nsis'
+    - target: 'portable'
     - target: 'zip'
   icon: static/icon.ico
 nsis:
-  artifactName: 'marktext-win-${arch}-${version}-setup.${ext}'
+  artifactName: 'markText-win-${arch}-${version}-setup.${ext}'
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: true

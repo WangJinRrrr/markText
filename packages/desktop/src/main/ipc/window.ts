@@ -8,6 +8,13 @@ import {
 } from 'electron'
 import log from 'electron-log'
 import type { MenuTemplate, MenuTemplateItem, MenuPopupPosition } from '@shared/types/menu'
+import type AppMenu from '../menu'
+
+let applicationMenu: AppMenu | undefined
+
+export const setApplicationMenu = (menu: AppMenu): void => {
+  applicationMenu = menu
+}
 
 const windowFromEvent = (event: IpcMainEvent): BrowserWindow | null =>
   BrowserWindow.fromWebContents(event.sender)
@@ -126,5 +133,12 @@ export const registerWindowHandlers = (): void => {
     } catch (err) {
       log.error('application menu popup failed:', err)
     }
+  })
+
+  ipcMain.on('mt::popup-file-menu', (event, position: MenuPopupPosition) => {
+    const win = windowFromEvent(event)
+    if (!win || !applicationMenu) return
+    const menu = applicationMenu.getFileMenu()
+    menu.popup({ window: win, x: position.x, y: position.y })
   })
 }

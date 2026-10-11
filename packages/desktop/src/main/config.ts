@@ -50,23 +50,6 @@ export const preferencesWinOptions: Readonly<BrowserWindowConstructorOptions> = 
   zoomFactor: 1.0
 } as BrowserWindowConstructorOptions)
 
-export const PANDOC_EXTENSIONS: readonly string[] = Object.freeze([
-  'html',
-  'docx',
-  'odt',
-  'latex',
-  'tex',
-  'ltx',
-  'rst',
-  'rest',
-  'org',
-  'wiki',
-  'dokuwiki',
-  'textile',
-  'opml',
-  'epub'
-])
-
 export const BLACK_LIST: readonly string[] = Object.freeze(['$RECYCLE.BIN'])
 
 export const EXTENSION_HASN: Readonly<{ styledHtml: string; pdf: string }> = Object.freeze({

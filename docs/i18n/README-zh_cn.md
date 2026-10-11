@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: 下一代 Markdown 编辑器 :crescent_moon:</strong><br>
-  一款专注于速度和易用性的简洁优雅的开源 Markdown 编辑器。<br>
+  <strong>:high_brightness: 轻量 Markdown 笔记本 :crescent_moon:</strong><br>
+  一款本地优先、专注于快速写作和清晰文件管理的开源 Markdown 笔记本。<br>
   <sub>支持 Linux、macOS 和 Windows。</sub>
 </div>
 
@@ -126,13 +126,14 @@ MarkText 是一款由社区支持驱动的开源 Markdown 编辑器。如果 Mar
 ## 功能
 
 - 实时预览（所见即所得）及简洁清爽的界面，带来无干扰的写作体验。
-- 支持 [CommonMark 规范](https://spec.commonmark.org)、[GitHub Flavored Markdown 规范](https://github.github.com/gfm/)，并选择性支持 [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown)。
+- 支持 [CommonMark 规范](https://spec.commonmark.org) 与 [GitHub Flavored Markdown 规范](https://github.github.com/gfm/)。
 - 支持数学表达式（KaTeX）、Front Matter 和表情符号等 Markdown 扩展。
 - 支持段落和内联样式快捷方式，提升写作效率。
 - 可导出 **HTML** 和 **PDF** 文件。
 - 多种[主题](https://marktext.me/docs/themes)：**Cadmium Light**、**Material Dark** 等。
 - 多种编辑模式：**源代码模式**、**打字机模式**、**专注模式**。
-- 支持直接从剪贴板粘贴图片。
+- 提供可通过键盘唤出的笔记仓库管理器（`Ctrl+Shift+F12` / `Cmd+Shift+F12`），用于浏览、创建、重命名、复制、移动、删除、显示和打开仓库文件。
+- 支持按文件夹或路径管理本地图片，并可直接从剪贴板粘贴图片。
 
 ## 下载与安装
 

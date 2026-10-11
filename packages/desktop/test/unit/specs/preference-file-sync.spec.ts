@@ -26,23 +26,21 @@ const typeOf = (value: unknown): string => {
   return typeof value
 }
 
-// Only the key this change adds is held to the sync rules: the file and the schema have
-// drifted on their own for a while, and repairing that is not this change's business.
-const KEY = 'showPandocConvert'
+const KEY = 'autoSave'
 
 describe('static/preference.json stays in sync with the preference schema', () => {
-  it('lists the switch this change declares, so it is not dropped on restart', () => {
+  it('lists the setting so it is not dropped on restart', () => {
     expect(defaults, `add ${KEY} to static/preference.json`).toHaveProperty(KEY)
   })
 
-  it('gives the switch the type the schema declares', () => {
+  it('gives the setting the type the schema declares', () => {
     const entry = schema[KEY]
     expect(typeOf(defaults[KEY])).toBe(entry?.type)
   })
 
   // The schema default is what a pruned key comes back as, and what PREFERENCES.md publishes;
   // the file holds what the first start writes. Nothing at runtime compares the two.
-  it('gives the switch the value the schema calls its default', () => {
+  it('gives the setting the value the schema calls its default', () => {
     expect(defaults[KEY]).toEqual(schema[KEY]?.default)
   })
 })

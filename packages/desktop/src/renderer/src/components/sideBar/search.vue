@@ -9,31 +9,76 @@
         :placeholder="t('sideBar.search.searchInFolder')"
         @keyup="search"
       >
-      <div class="controls">
-        <span
-          :title="t('search.caseSensitive')"
-          class="is-case-sensitive"
-          :class="{ active: isCaseSensitive }"
-          @click.stop="caseSensitiveClicked()"
+      <div
+        ref="controlsElement"
+        class="controls"
+        @keydown.esc.stop="showSearchOptions = false"
+      >
+        <button
+          type="button"
+          class="search-options-trigger"
+          aria-haspopup="menu"
+          :aria-expanded="showSearchOptions"
+          aria-label="Search options"
+          title="Search options"
+          @click.stop="showSearchOptions = !showSearchOptions"
         >
-          <FindCaseIcon aria-hidden="true" />
-        </span>
-        <span
-          :title="t('search.wholeWord')"
-          class="is-whole-word"
-          :class="{ active: isWholeWord }"
-          @click.stop="wholeWordClicked()"
+          <MoreFilled aria-hidden="true" />
+        </button>
+        <div
+          v-if="showSearchOptions"
+          class="search-options-menu"
+          role="menu"
         >
-          <FindWordIcon aria-hidden="true" />
-        </span>
-        <span
-          :title="t('search.useRegex')"
-          class="is-regex"
-          :class="{ active: isRegexp }"
-          @click.stop="regexpClicked()"
-        >
-          <FindRegexIcon aria-hidden="true" />
-        </span>
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            :aria-checked="isCaseSensitive"
+            :class="{ active: isCaseSensitive }"
+            @click="caseSensitiveClicked"
+          >
+            <FindCaseIcon
+              aria-hidden="true"
+            />
+            <span>{{ t('search.caseSensitive') }}</span>
+            <i
+              class="option-indicator"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            :aria-checked="isWholeWord"
+            :class="{ active: isWholeWord }"
+            @click="wholeWordClicked"
+          >
+            <FindWordIcon
+              aria-hidden="true"
+            />
+            <span>{{ t('search.wholeWord') }}</span>
+            <i
+              class="option-indicator"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            :aria-checked="isRegexp"
+            :class="{ active: isRegexp }"
+            @click="regexpClicked"
+          >
+            <FindRegexIcon
+              aria-hidden="true"
+            />
+            <span>{{ t('search.useRegex') }}</span>
+            <i
+              class="option-indicator"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -104,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useLayoutStore } from '@/store/layout'
 import { useProjectStore } from '@/store/project'
 import { useEditorStore } from '@/store/editor'
@@ -117,7 +162,7 @@ import RipgrepDirectorySearcher from '../../node/ripgrepSearcher'
 import FindCaseIcon from '@/assets/icons/searchIcons/iconCase.svg'
 import FindWordIcon from '@/assets/icons/searchIcons/iconWord.svg'
 import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
-import { VideoPause } from '@element-plus/icons-vue'
+import { MoreFilled, VideoPause } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
 import type { SearchResult } from './types'
 
@@ -139,6 +184,8 @@ const isCaseSensitive = ref(false)
 const isWholeWord = ref(false)
 const isRegexp = ref(false)
 const searchEl = ref<HTMLInputElement | null>(null)
+const controlsElement = ref<HTMLElement | null>(null)
+const showSearchOptions = ref(false)
 
 const { rightColumn, showSideBar } = storeToRefs(layoutStore)
 const { currentFile } = storeToRefs(editorStore)
@@ -287,6 +334,12 @@ const regexpClicked = (): void => {
   search()
 }
 
+const handleDocumentClick = (event: MouseEvent): void => {
+  if (!controlsElement.value?.contains(event.target as Node)) {
+    showSearchOptions.value = false
+  }
+}
+
 let searchCancelTimer: ReturnType<typeof setTimeout> | null = null
 const startShowSearchCancelAreaTimer = (): void => {
   if (searchCancelTimer) {
@@ -325,10 +378,16 @@ watch(showSideBar, (value, oldValue) => {
 onMounted(() => {
   handleFindInFolder()
   bus.on('findInFolder', handleFindInFolder)
+  document.addEventListener('click', handleDocumentClick, true)
   if (keyword.value.length > 0 && searcherRunning.value === false) {
     searcherRunning.value = true
     search()
   }
+})
+
+onBeforeUnmount(() => {
+  bus.off('findInFolder', handleFindInFolder)
+  document.removeEventListener('click', handleDocumentClick, true)
 })
 </script>
 
@@ -340,6 +399,7 @@ onMounted(() => {
 }
 .search-wrapper {
   display: flex;
+  position: relative;
   margin: 37px 8px 10px 8px;
   padding: 0 6px;
   border-radius: 4px;
@@ -359,34 +419,96 @@ onMounted(() => {
     font-size: 13px;
     width: 50%;
   }
+  & > input:focus,
+  & > input:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
   & > .controls {
     display: flex;
     flex-shrink: 0;
     margin-top: 0;
-    & > span {
-      cursor: pointer;
-      width: 18px;
-      height: 18px;
-      margin-left: 0;
-      margin-right: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      &:hover {
-        color: var(--sideBarIconColor);
-      }
-      & > svg {
-        width: 14px;
-        height: 14px;
-        fill: var(--sideBarIconColor);
-        &:hover {
-          fill: var(--highlightThemeColor);
-        }
-      }
-      &.active svg {
-        fill: var(--highlightThemeColor);
-      }
-    }
+  }
+
+  .search-options-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    color: var(--sideBarIconColor);
+    background: transparent;
+    border: 0;
+    border-radius: var(--controlRadius, 4px);
+    cursor: pointer;
+  }
+
+  .search-options-trigger:hover,
+  .search-options-trigger:focus-visible {
+    color: var(--highlightThemeColor);
+    background: var(--sideBarItemHoverBgColor);
+    outline: none;
+  }
+
+  .search-options-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 10;
+    min-width: 0;
+    padding: 4px;
+    background: var(--floatBgColor);
+    border: 1px solid var(--floatBorderColor);
+    border-radius: var(--controlRadius, 4px);
+    box-shadow: var(--shellShadow, 0 6px 18px rgb(0 0 0 / 16%));
+  }
+
+  .search-options-menu button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 30px;
+    gap: 8px;
+    padding: 0 8px;
+    color: var(--sideBarColor);
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-radius: var(--controlRadius, 4px);
+    cursor: pointer;
+  }
+
+  .search-options-menu button:hover,
+  .search-options-menu button:focus-visible,
+  .search-options-menu button.active {
+    color: var(--sideBarTitleColor);
+    background: var(--sideBarItemHoverBgColor);
+    outline: none;
+  }
+
+  .search-options-menu button > svg {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  .search-options-menu button > span {
+    flex: 1;
+  }
+
+  .option-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--highlightThemeColor);
+    opacity: 0;
+  }
+
+  .search-options-menu button.active .option-indicator {
+    opacity: 1;
   }
 
   & > svg {

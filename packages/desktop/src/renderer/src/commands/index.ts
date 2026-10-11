@@ -589,6 +589,12 @@ const commands: CommandDescriptor[] = [
   // View
 
   {
+    id: 'view.notebook-repository-manager',
+    execute: async() => {
+      bus.emit('show-notebook-repository-manager')
+    }
+  },
+  {
     id: 'view.source-code-mode',
     execute: async() => {
       bus.emit('view:toggle-view-entry', 'sourceCode')
@@ -709,6 +715,80 @@ if (isMac) {
   })
 }
 
+// Native menus own these operations; keeping them in the palette creates duplicate
+// entry points with separate implementations and state handling.
+const NATIVE_MENU_COMMANDS = new Set([
+  'file.new-tab',
+  'file.new-window',
+  'file.open-file',
+  'file.open-folder',
+  'file.save',
+  'file.save-as',
+  'file.print',
+  'file.close-tab',
+  'file.close-window',
+  'file.toggle-auto-save',
+  'file.move-file',
+  'file.rename-file',
+  'file.import-file',
+  'file.export-file',
+  'file.export-file-html',
+  'file.export-file-pdf',
+  'edit.undo',
+  'edit.redo',
+  'edit.duplicate',
+  'edit.create-paragraph',
+  'edit.delete-paragraph',
+  'edit.find',
+  'edit.replace',
+  'edit.find-in-folder',
+  'window.minimize',
+  'window.toggle-always-on-top',
+  'window.toggle-full-screen',
+  'window.change-theme',
+  'file.zoom',
+  'view.source-code-mode',
+  'view.typewriter-mode',
+  'view.focus-mode',
+  'view.toggle-sidebar',
+  'view.toggle-tabbar',
+  'file.preferences',
+  'file.quit',
+  'paragraph.heading-1',
+  'paragraph.heading-2',
+  'paragraph.heading-3',
+  'paragraph.heading-4',
+  'paragraph.heading-5',
+  'paragraph.heading-6',
+  'paragraph.upgrade-heading',
+  'paragraph.degrade-heading',
+  'paragraph.table',
+  'paragraph.code-fence',
+  'paragraph.quote-block',
+  'paragraph.math-formula',
+  'paragraph.html-block',
+  'paragraph.order-list',
+  'paragraph.bullet-list',
+  'paragraph.task-list',
+  'paragraph.loose-list-item',
+  'paragraph.paragraph',
+  'paragraph.reset-paragraph',
+  'paragraph.horizontal-line',
+  'paragraph.front-matter',
+  'format.strong',
+  'format.emphasis',
+  'format.underline',
+  'format.highlight',
+  'format.superscript',
+  'format.subscript',
+  'format.inline-code',
+  'format.inline-math',
+  'format.strike',
+  'format.hyperlink',
+  'format.image',
+  'format.clear-format'
+])
+
 // Function to get commands with updated descriptions
 export const getCommandsWithDescriptions = async(): Promise<CommandDescriptor[]> => {
   // Update descriptions for all commands
@@ -748,8 +828,9 @@ export const getCommandsWithDescriptions = async(): Promise<CommandDescriptor[]>
     }
   }
 
-  updateDescriptions(commands)
-  return commands
+  const paletteCommands = commands.filter((command) => !NATIVE_MENU_COMMANDS.has(command.id))
+  updateDescriptions(paletteCommands)
+  return paletteCommands
 }
 
 // Complete all command descriptions for initial load.

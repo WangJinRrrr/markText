@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: Editor Markdown de nueva generación :crescent_moon:</strong><br>
-  Un editor Markdown de código abierto, simple y elegante, enfocado en velocidad y usabilidad.<br>
+  <strong>:high_brightness: Un cuaderno Markdown ligero :crescent_moon:</strong><br>
+  Un cuaderno Markdown local y de código abierto para escribir rápido y organizar los archivos con claridad.<br>
   <sub>Disponible para Linux, macOS y Windows.</sub>
 </div>
 
@@ -125,13 +125,14 @@ MarkText es un editor de Markdown de código abierto impulsado por el apoyo de s
 ## Características
 
 - Vista previa en tiempo real (WYSIWYG) e interfaz limpia y simple para una experiencia de escritura sin distracciones.
-- Compatible con [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) y soporte selectivo de [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown).
+- Compatible con [CommonMark Spec](https://spec.commonmark.org) y [GitHub Flavored Markdown Spec](https://github.github.com/gfm/).
 - Extensiones Markdown como expresiones matemáticas (KaTeX), front matter y emojis.
 - Soporte para atajos de párrafo y estilo en línea para mejorar tu eficiencia de escritura.
 - Exportación de archivos **HTML** y **PDF**.
 - Varios [temas](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark**, etc.
 - Varios modos de edición: **Modo Código Fuente**, **Modo Máquina de Escribir**, **Modo Enfoque**.
-- Pegado de imágenes directamente desde el portapapeles.
+- Un gestor de repositorio accesible por teclado (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) para explorar, crear, renombrar, copiar, mover, eliminar y abrir archivos.
+- Gestión local de imágenes mediante carpetas o rutas, con pegado directo desde el portapapeles.
 
 ## Descarga e Instalación
 

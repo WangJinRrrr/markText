@@ -44,7 +44,7 @@ Links are displayed by default as normal text, but if you click on a link it is 
 
 ## Formatting
 
-MarkText will automatically format your markdown document according CommonMark and GitHub Flavored Markdown specification. Some settings, such as list indentation, can be controlled via preferences. 
+MarkText will automatically format your markdown document according CommonMark and GitHub Flavored Markdown specification. Some settings, such as list indentation, can be controlled via preferences.
 
 ## Editing features
 
@@ -80,7 +80,7 @@ You can simply move a row or column by clicking on the cell menu (like above) an
 
 ![](../assets/marktext-image-viewer.png)
 
-MarkText provides an image viewer and a pop-up to select and label images. You can resize any image using your mouse cursor; changes are applied in realtime. By clicking on an image or writing `![]()` a pop-up automatically appears that allows you to select an image from disk, or paste a path or URL. Images can be automatically uploaded to cloud, or moved to a relative or absolute path on your local disk. Even pasting images that are not located on disk is supported and these images are stored in the background. In addition, you can control the image alignment whether inline, left, centered or right.
+MarkText provides an image viewer and a pop-up to select and label images. You can resize any image using your mouse cursor; changes are applied in realtime. By clicking on an image or writing `![]()` a pop-up automatically appears that allows you to select an image from disk, or paste a path or URL. Images can be copied to a relative or absolute path on your local disk, and pasted images that are not yet stored on disk are persisted in the background. In addition, you can control the image alignment whether inline, left, centered or right.
 
 ![](../assets/marktext-image-popup.png)
 

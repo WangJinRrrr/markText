@@ -1,8 +1,7 @@
 import {
   Folder as FilesIcon,
   Search as SearchIcon,
-  Memo as TocIcon,
-  Setting as SettingIcon
+  Memo as TocIcon
 } from '@element-plus/icons-vue'
 import { t } from '@/i18n'
 
@@ -27,13 +26,5 @@ export const sideBarIcons: SideBarIconEntry[] = [
     id: 'toc',
     name: () => t('sideBar.icons.toc'),
     icon: TocIcon
-  }
-]
-
-export const sideBarBottomIcons: SideBarIconEntry[] = [
-  {
-    id: 'settings',
-    name: () => t('sideBar.icons.settings'),
-    icon: SettingIcon
   }
 ]

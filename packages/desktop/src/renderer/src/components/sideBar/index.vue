@@ -16,15 +16,6 @@
           <component :is="c.icon" />
         </li>
       </ul>
-      <ul class="bottom">
-        <li
-          v-for="(c, index) of sideBarBottomIcons"
-          :key="index"
-          @click="handleLeftBottomClick(c.id)"
-        >
-          <component :is="c.icon" />
-        </li>
-      </ul>
     </div>
     <div
       v-show="rightColumn"
@@ -33,8 +24,6 @@
       <tree
         v-if="rightColumn === 'files'"
         :project-tree="projectTree"
-        :opened-files="openedFiles"
-        :tabs="tabs"
       />
       <side-bar-search v-else-if="rightColumn === 'search'" />
       <toc v-else-if="rightColumn === 'toc'" />
@@ -51,29 +40,23 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { useLayoutStore } from '@/store/layout'
 import { useProjectStore } from '@/store/project'
-import { useEditorStore } from '@/store/editor'
-
-import { sideBarIcons, sideBarBottomIcons } from './help'
+import { sideBarIcons } from './help'
 import Tree from './tree.vue'
 import SideBarSearch from './search.vue'
 import Toc from './toc.vue'
 import { storeToRefs } from 'pinia'
-import type { TabDescriptor } from './types'
 
 const layoutStore = useLayoutStore()
 const projectStore = useProjectStore()
-const editorStore = useEditorStore()
 
 const sideBar = ref<HTMLDivElement | null>(null)
 const dragBar = ref<HTMLDivElement | null>(null)
 
-const openedFiles = ref<TabDescriptor[]>([])
 const sideBarViewWidth = ref(280)
 
 const { rightColumn, showSideBar, sideBarWidth } = storeToRefs(layoutStore)
 
 const { projectTree } = storeToRefs(projectStore)
-const { tabs } = storeToRefs(editorStore)
 
 const finalSideBarWidth = computed<number>(() => {
   if (!showSideBar.value) return 0
@@ -132,11 +115,6 @@ const handleLeftIconClick = (name: string): void => {
   }
 }
 
-const handleLeftBottomClick = (name: string): void => {
-  if (name === 'settings') {
-    projectStore.OPEN_SETTING_WINDOW()
-  }
-}
 </script>
 
 <style scoped>
@@ -210,6 +188,8 @@ const handleLeftBottomClick = (name: string): void => {
 .right-column {
   flex: 1;
   width: calc(100% - 50px);
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 

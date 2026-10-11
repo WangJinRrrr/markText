@@ -46,8 +46,90 @@ import { isLinux } from './index'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ORIGINAL_THEME = '#409EFF'
 
+const getMinimalShellPatch = (): string => `
+:root {
+  --controlRadius: 4px;
+  --shellBorder: 1px solid var(--floatBorderColor);
+  --shellFocusRing: 0 0 0 2px var(--themeColor20);
+  --shellSpace: 8px;
+  --theme-color: var(--themeColor);
+  --highlight-color: var(--highlightColor);
+  --selection-color: var(--selectionColor);
+  --editor-color: var(--editorColor);
+  --editor-color-80: var(--editorColor80);
+  --editor-color-60: var(--editorColor60);
+  --editor-color-50: var(--editorColor50);
+  --editor-color-30: var(--editorColor30);
+  --editor-color-10: var(--editorColor10);
+  --editor-color-04: var(--editorColor04);
+  --editor-bg-color: var(--editorBgColor);
+  --editor-area-width: var(--editorAreaWidth);
+  --icon-color: var(--iconColor);
+  --input-bg-color: var(--inputBgColor);
+  --float-bg-color: var(--floatBgColor);
+  --float-hover-color: var(--floatHoverColor);
+  --float-border-color: var(--floatBorderColor);
+  --link-color: var(--linkColor);
+  --h1-color: var(--h1Color);
+  --h2-color: var(--h2Color);
+  --h3-color: var(--h3Color);
+  --h4-color: var(--h4Color);
+  --h5-color: var(--h5Color);
+  --h6-color: var(--h6Color);
+  --blockquote-text-color: var(--blockquoteTextColor);
+  --blockquote-border-color: var(--blockquoteBorderColor);
+  --strong-color: var(--strongColor);
+  --em-color: var(--emColor);
+  --list-marker-color: var(--listMarkerColor);
+  --hr-color: var(--hrColor);
+}
+
+.el-dialog,
+.el-dialog.ag-dialog-table,
+.mu-float-wrapper {
+  border-radius: var(--controlRadius);
+  box-shadow: var(--floatShadow);
+}
+
+button,
+.el-button,
+input,
+textarea,
+select {
+  border-radius: var(--controlRadius);
+}
+
+.el-button:hover,
+.el-button--primary:hover {
+  background-image: none;
+}
+
+.side-bar,
+.editor-tabs {
+  border-color: var(--floatBorderColor);
+}
+
+.side-bar .left-column ul > li:focus-visible,
+.side-bar .right-column:focus-visible,
+.tree-wrapper:focus-visible,
+.tabs-container > li:focus-visible {
+  outline: 2px solid var(--focusColor);
+  outline-offset: -2px;
+  box-shadow: var(--shellFocusRing);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+`
+
 const patchTheme = (css: string): string => {
-  return `@media not print {\n${css}\n}`
+  return `@media not print {\n${css}\n${getMinimalShellPatch()}\n}`
 }
 
 const getEmojiPickerPatch = (): string => {

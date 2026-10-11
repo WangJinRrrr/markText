@@ -1,18 +1,16 @@
 import { app, type BrowserWindow, type MenuItemConstructorOptions } from 'electron'
 import * as actions from '../actions/file'
-import { userSetting } from '../actions/marktext'
 import { isOsx } from '../../config'
 import { t } from '../../i18n'
 import type Keybindings from '../../keyboard/shortcutHandler'
 import type Preference from '../../preferences'
-import { PANDOC_EXPORT_FORMATS } from '../../utils/pandoc'
 
 export default function(
   keybindings: Keybindings,
   userPreference: Preference,
   recentlyUsedFiles: string[]
 ): MenuItemConstructorOptions {
-  const { autoSave, showPandocConvert } = userPreference.getAll()
+  const { autoSave } = userPreference.getAll()
   const submenu: MenuItemConstructorOptions[] = [
     {
       label: t('menu.file.newTab'),
@@ -171,32 +169,10 @@ export default function(
       ]
     },
     {
-      label: t('menu.file.convertWithPandoc'),
-      visible: !!showPandocConvert,
-      submenu: PANDOC_EXPORT_FORMATS.map((format) => ({
-        label: format.label,
-        click(_menuItem, browserWindow) {
-          actions.exportWithPandoc(browserWindow as BrowserWindow | undefined, format.id)
-        }
-      }))
-    },
-    {
       label: t('menu.file.print'),
       accelerator: keybindings.getAccelerator('file.print') ?? undefined,
       click(_menuItem, browserWindow) {
         actions.printDocument(browserWindow as BrowserWindow | undefined)
-      }
-    },
-    {
-      type: 'separator',
-      visible: !isOsx
-    },
-    {
-      label: t('menu.file.preferences'),
-      accelerator: keybindings.getAccelerator('file.preferences') ?? undefined,
-      visible: !isOsx,
-      click() {
-        userSetting()
       }
     },
     {

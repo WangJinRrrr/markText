@@ -24,7 +24,6 @@
       "export": "Export",
       "exportHtml": "Export as HTML",
       "exportPdf": "Export as PDF",
-      "convertWithPandoc": "Convert with Pandoc",
       "import": "Import",
       "print": "Print",
       "closeTab": "Close Tab",
@@ -118,6 +117,7 @@
       "toggleSidebar": "Toggle Sidebar",
       "toggleTabbar": "Toggle Tabbar",
       "commandPalette": "Command Palette",
+      "notebookRepositoryManager": "Notebook Repository Manager",
       "sourceCodeMode": "Source Code Mode",
       "typewriterMode": "Typewriter Mode",
       "focusMode": "Focus Mode",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryName": "The relative image folder name",
         "autoNormalizeLineEndings": "Automatically normalize line endings when opening files. When disabled, files are opened as-is.",
         "fileSortOrder": "Sort order for files in opened folders: ascending or descending.",
-        "openedFilesInSidebar": "Whether to show opened files in the sidebar.",
-        "showPandocConvert": "Show the Pandoc conversion menu. Requires Pandoc to be installed."
+        "openedFilesInSidebar": "Whether to show opened files in the sidebar."
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "Restore all opened files and folders",
         "selectFolder": "Select Folder",
         "openBlankPage": "Open blank page"
-      },
-      "pandoc": {
-        "title": "Pandoc Conversion",
-        "description": "Show the Pandoc conversion menu",
-        "detailedDescription": "Requires Pandoc to be installed",
-        "found": "Found: {path}",
-        "notFound": "Not found",
-        "recheck": "Re-check"
       },
       "sidebar": {
         "title": "Sidebar",
@@ -593,7 +584,6 @@
     "image": {
       "title": "Image",
       "actions": {
-        "upload": "Upload to cloud",
         "folder": "Copy to folder",
         "path": "Use absolute path"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "Relative to folder",
         "relativeFolderName": "Relative folder name",
         "filenameNote": "The filename will be automatically generated."
-      },
-      "uploader": {
-        "title": "Image Uploader",
-        "currentUploader": "Current Uploader: {name}",
-        "picgoNotInstalled": "PicGo is not installed",
-        "picgoInstalled": "PicGo is installed",
-        "picgoDetectionFailed": "PicGo detection failed",
-        "debugInfo": "Debug Info",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "Choose installation method:",
-        "retestPicgo": "Retest",
-        "lastDetectionTime": "Last Detection Time",
-        "picgoDetection": "PicGo Detection",
-        "usageGuide": {
-          "title": "PicGo Basic Usage Guide",
-          "step1": "Configure Uploader",
-          "step1Description": "Use the following command to configure PicGo uploader:",
-          "step2": "Upload Images",
-          "step2Description": "Use the following command to upload images:",
-          "step3": "View Configuration",
-          "step3Description": "Use the following command to view current configuration:",
-          "documentation": "View full documentation"
-        },
-        "lastSuccessTime": "Last success time",
-        "neverDetected": "Never detected",
-        "neverSuccessful": "Never successful",
-        "scriptDescription": "Script Description",
-        "scriptLocation": "Script Location",
-        "save": "Save",
-        "saveConfig": "Save Configuration",
-        "scriptConfigSaved": "Script configuration saved",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "CLI Script"
-        },
-        "pleaseInstall": "Please install",
-        "scriptPath": "Script path"
       },
       "defaultBehavior": "The default behavior after pasting or dragging the image to MarkText"
     },
@@ -871,6 +822,7 @@
     },
     "view": {
       "commandPalette": "Command Palette",
+      "notebookRepositoryManager": "Notebook Repository Manager",
       "sourceCodeMode": "Source Code Mode",
       "typewriterMode": "Typewriter Mode",
       "focusMode": "Focus Mode",

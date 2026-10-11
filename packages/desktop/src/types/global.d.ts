@@ -156,10 +156,6 @@ declare global {
     delimiter: string
   }
 
-  interface CommandExistsAPI {
-    exists(name: string): Promise<boolean>
-  }
-
   interface I18nUtilsAPI {
     loadTranslations(language: string): Promise<Record<string, unknown>>
   }
@@ -172,10 +168,6 @@ declare global {
     onDone(handler: (payload: unknown) => void): () => void
     onError(handler: (payload: unknown) => void): () => void
     onCancelled(handler: (payload: unknown) => void): () => void
-  }
-
-  interface UploaderAPI {
-    uploadImage(req: unknown): Promise<unknown>
   }
 
   interface FontsAPI {
@@ -196,10 +188,8 @@ declare global {
     electron: ElectronAPI
     fileUtils: FileUtilsAPI
     path: PathAPI
-    commandExists: CommandExistsAPI
     i18nUtils: I18nUtilsAPI
     ripgrep: RipgrepAPI
-    uploader: UploaderAPI
     fonts: FontsAPI
     diagram: DiagramAPI
     process: ProcessShim

@@ -110,7 +110,7 @@ import Printer from '@/services/printService'
 import { SpellcheckerLanguageCommand } from '@/commands'
 import { SpellChecker } from '@/spellchecker'
 import { isMac, animatedScrollTo } from '@/util'
-import { moveImageToFolder, uploadImage } from '@/util/fileSystem'
+import { moveImageToFolder } from '@/util/fileSystem'
 import { guessClipboardFilePath } from '@/util/clipboard'
 import { dataURLToFile } from '@/util/dataURLToFile'
 import { getCssForOptions, getHtmlToc, type PdfCssOptions, type HtmlTocOptions } from '@/util/pdf'
@@ -213,7 +213,6 @@ const {
   autoCheck,
   editorLineWidth,
   wrapCodeBlocks,
-  imageInsertAction,
   imagePreferRelativeDirectory,
   imageRelativeDirectoryBase,
   imageRelativeDirectoryName,
@@ -842,8 +841,8 @@ const imageAction = async (
   const { filename, pathname: currentPathname } = currentFile.value
 
   // A pasted screenshot / bitmap clipboard comes in as a `data:` URL string
-  // rather than a file path. `moveImageToFolder` and `uploadImage` treat any
-  // string as a local path, which would silently keep the base64 inline — so
+  // rather than a file path. `moveImageToFolder` treats any string as a local
+  // path, which would silently keep the base64 inline — so
   // normalize it back into a `File` up front and let the branches below handle
   // it as binary.
   if (typeof image === 'string' && image.startsWith('data:')) {
@@ -878,29 +877,7 @@ const imageAction = async (
     ? window.path.join(relativeBasePath, resolvedImageRelativeDirectoryName)
     : null // /root/dir/assets
   let destImagePath = ''
-  switch (imageInsertAction.value) {
-    case 'upload': {
-      try {
-        // Pass the full preferences state object to avoid dereferencing non-existent .value
-        destImagePath = (await uploadImage(
-          currentPathname,
-          image,
-          preferencesStore.$state as unknown as import('@/util/fileSystem').UploadImagePreferences
-        )) as string
-      } catch (err) {
-        notice.notify({
-          title: 'Upload Image',
-          type: 'warning',
-          message: err as string
-        })
-        destImagePath = (await moveImageToFolder(
-          currentPathname,
-          image,
-          resolvedGlobalImageFolderPath
-        )) as string
-      }
-      break
-    }
+  switch (preferencesStore.imagePreferRelativeDirectory ? 'folder' : 'path') {
     case 'folder': {
       if (isTabSavedOnDisk && imagePreferRelativeDirectory.value) {
         // `image` may be a path string (paste/drag/image-selector) — pass
@@ -2145,6 +2122,12 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
   cursor: default;
   overflow-anchor: none !important;
+}
+
+/* The editor itself is the reading surface; its focus should not frame the whole document. */
+.editor-component:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .editor-component .mu-container {

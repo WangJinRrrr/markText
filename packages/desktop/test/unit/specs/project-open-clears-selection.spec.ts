@@ -59,21 +59,17 @@ describe('OPEN_PROJECT resets sidebar state', () => {
     setActivePinia(createPinia())
   })
 
-  it('drops the previous project selection and input caches', () => {
+  it('drops the previous project selection', () => {
     const store = useProjectStore()
 
     store.OPEN_PROJECT('/project-a')
     store.CHANGE_ACTIVE_ITEM({ pathname: '/project-a/notes.md', isFile: true, isDirectory: false })
-    store.createCache = { dirname: '/project-a', type: 'file' }
-    store.renameCache = '/project-a/notes.md'
 
     expect(store.activeItem.pathname).toBe('/project-a/notes.md')
 
     store.OPEN_PROJECT('/project-b')
 
     expect(store.activeItem).toEqual({})
-    expect(store.createCache).toEqual({})
-    expect(store.renameCache).toBeNull()
     expect(store.projectTree?.pathname).toBe('/project-b')
   })
 })

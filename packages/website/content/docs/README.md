@@ -19,7 +19,6 @@ Welcome to the end-user documentation of MarkText.
 - [Environment variables](end-user/ENVIRONMENT.md)
 - [Export a document](end-user/EXPORT.md)
 - [Image handling](end-user/IMAGES.md)
-- [Image uploader configuration](end-user/IMAGE_UPLOADER_CONFIGRATION.md)
 - [Installation instructions](end-user/INSTALLATION.md)
 - [Key bindings](end-user/KEYBINDINGS.md)
 - [Portable mode](end-user/PORTABLE.md)

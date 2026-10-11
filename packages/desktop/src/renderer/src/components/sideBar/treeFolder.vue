@@ -1,10 +1,9 @@
 <template>
   <div class="side-bar-folder">
     <div
-      ref="folderEl"
       class="folder-name"
       :style="{ 'padding-left': `${depth * 6 + 10}px` }"
-      :class="[{ active: folder.id === activeItem.id }]"
+      :class="[{ active: isSamePath(activeItem?.pathname ?? '', folder.pathname) }]"
       :title="folder.pathname"
       @click="folderNameClick"
     >
@@ -15,19 +14,7 @@
       >
         <ArrowRight />
       </el-icon>
-      <input
-        v-if="renameCache === folder.pathname"
-        ref="renameInput"
-        v-model="nameInputValue"
-        type="text"
-        class="rename"
-        @click.stop="noop"
-        @keypress.enter="rename"
-      >
-      <span
-        v-else
-        class="text-overflow"
-      >{{ folder.name }}</span>
+      <span class="text-overflow">{{ folder.name }}</span>
     </div>
     <div
       v-if="!isCollapsed"
@@ -39,15 +26,6 @@
         :folder="childFolder"
         :depth="depth + 1"
       />
-      <input
-        v-if="createCache.dirname === folder.pathname"
-        ref="input"
-        v-model="nameInputValue"
-        type="text"
-        class="new-input"
-        :style="{ 'margin-left': `${depth * 5 + 15}px` }"
-        @keypress.enter="handleInputEnter"
-      >
       <File
         v-for="file of folder.files"
         :key="file.id"
@@ -59,11 +37,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/store/project'
-import { showContextMenu } from '../../contextMenu/sideBar'
-import bus from '../../bus'
+import { isSamePath } from '@/util'
 import File from './treeFile.vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import type { TreeFolderNode } from './types'
@@ -75,10 +52,6 @@ const props = defineProps<{
 
 const projectStore = useProjectStore()
 
-const folderEl = ref<HTMLDivElement | null>(null)
-const renameInput = ref<HTMLInputElement | null>(null)
-const input = ref<HTMLInputElement | null>(null)
-
 // Kept on the tree node, not locally: the Files view is under a v-if and
 // remounts on every sidebar view switch (#5631).
 const isCollapsed = computed<boolean>({
@@ -88,62 +61,12 @@ const isCollapsed = computed<boolean>({
   }
 })
 
-const { renameCache } = storeToRefs(projectStore)
-const { createCache } = storeToRefs(projectStore)
-const { nameInputValue } = storeToRefs(projectStore)
 const { activeItem } = storeToRefs(projectStore)
-const { clipboard } = storeToRefs(projectStore)
-
-const handleInputFocus = (): void => {
-  // Only the folder that is the create target reacts. Expand it FIRST so the
-  // create input renders even when the folder was collapsed, then focus it on
-  // the next tick — previously the expand sat behind `if (input.value)`, which
-  // is null while collapsed, so New File on a collapsed folder did nothing
-  // (#3439).
-  if (createCache.value.dirname !== props.folder.pathname) return
-  isCollapsed.value = false
-  nextTick(() => {
-    if (input.value) {
-      input.value.focus()
-    }
-  })
-}
-
-const handleInputEnter = (): void => {
-  projectStore.CREATE_FILE_DIRECTORY(nameInputValue.value)
-}
 
 const folderNameClick = (): void => {
   projectStore.CHANGE_ACTIVE_ITEM(props.folder)
   isCollapsed.value = !isCollapsed.value
 }
-
-const noop = (): void => {}
-
-const focusRenameInput = (): void => {
-  // The `v-if` input mounts on the next tick; the store seeds its value.
-  nextTick(() => {
-    if (!renameInput.value) return
-    renameInput.value.focus()
-    renameInput.value.setSelectionRange(0, props.folder.name.length)
-  })
-}
-
-const rename = (): void => {
-  projectStore.RENAME_IN_SIDEBAR(nameInputValue.value)
-}
-
-onMounted(() => {
-  if (folderEl.value) {
-    folderEl.value.addEventListener('contextmenu', (event) => {
-      event.preventDefault()
-      projectStore.CHANGE_ACTIVE_ITEM(props.folder)
-      showContextMenu(event, !!clipboard.value)
-    })
-  }
-  bus.on('SIDEBAR::show-new-input', handleInputFocus)
-  bus.on('SIDEBAR::show-rename-input', focusRenameInput)
-})
 </script>
 
 <style scoped>
@@ -173,17 +96,5 @@ onMounted(() => {
       background: var(--themeColor20);
     }
   }
-}
-.new-input,
-input.rename {
-  outline: none;
-  height: 22px;
-  margin: 5px 0;
-  padding: 0 6px;
-  color: var(--sideBarColor);
-  border: 1px solid var(--focusColor);
-  background: var(--floatBorderColor);
-  width: 70%;
-  border-radius: 3px;
 }
 </style>

@@ -1,6 +1,8 @@
 <p align="center"><img src="docs/assets/logo-small.png" alt="MarkText" width="100" height="100"></p>
 
-<h1 align="center">MarkText</h1>
+<h1 align="center">markText</h1>
+
+> This project is a modified distribution derived from the upstream [MarkText](https://github.com/marktext/marktext) project. The upstream project and its contributors are acknowledged with respect.
 
 <div align="center">
   <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
@@ -8,8 +10,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: Next generation markdown editor :crescent_moon:</strong><br>
-  A simple and elegant open-source markdown editor that focused on speed and usability.<br>
+  <strong>:high_brightness: A lightweight Markdown notebook :crescent_moon:</strong><br>
+  A local-first, open-source Markdown notebook focused on fast writing and clear file organization.<br>
   <sub>Available for Linux, macOS and Windows.</sub>
 </div>
 
@@ -90,7 +92,7 @@
 </div>
 
 <div align="center">
-  <sub>This Markdown editor that could. Built with ❤︎ by
+  <sub>This Markdown notebook is built with ❤︎ by
     <a href="https://github.com/Jocs">Jocs</a> and
     <a href="https://github.com/marktext/marktext/graphs/contributors">
       contributors
@@ -103,7 +105,7 @@
 
 <h2 align="center">Sponsors</h2>
 
-MarkText is an open-source Markdown editor powered by the support of its community. If MarkText improves your workflow, please consider [sponsoring the project](https://github.com/sponsors/marktext). Thank you to all the sponsors ❤️
+MarkText is an open-source Markdown notebook powered by the support of its community. If MarkText improves your workflow, please consider [sponsoring the project](https://github.com/sponsors/marktext). Thank you to all the sponsors ❤️
 
 **Special Sponsor**
 
@@ -120,14 +122,15 @@ MarkText is an open-source Markdown editor powered by the support of its communi
 
 ## Features
 
-- Realtime preview (WYSIWYG) and a clean and simple interface to get a distraction-free writing experience.
-- Support [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and selective support [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown).
-- Markdown extensions such as math expressions (KaTeX), front matter and emojis.
-- Support paragraphs and inline style shortcuts to improve your writing efficiency.
-- Output **HTML** and **PDF** files.
-- Various [themes](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark** etc.
-- Various editing modes: **Source Code mode**, **Typewriter mode**, **Focus mode**.
-- Paste images directly from clipboard.
+- Realtime preview (WYSIWYG) and a clean, minimal interface for distraction-free writing.
+- A keyboard-first notebook repository manager (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) for browsing, creating, renaming, copying, moving, deleting, revealing, and opening repository files.
+- A focused sidebar for repository navigation, in-folder search, and the current document's table of contents; open notes remain visible in the editor tab bar.
+- Support [CommonMark Spec](https://spec.commonmark.org) and [GitHub Flavored Markdown Spec](https://github.github.com/gfm/), with Markdown extensions such as KaTeX math, front matter, diagrams, and emojis.
+- Support paragraphs and inline style shortcuts to improve writing efficiency.
+- Local image persistence with relative-folder or path-based asset handling.
+- Output **HTML**, **PDF**, and print documents.
+- Various [themes](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark**, and more.
+- Various editing modes: **Source Code mode**, **Typewriter mode**, and **Focus mode**.
 
 ## Download and Installation
 

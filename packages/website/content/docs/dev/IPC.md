@@ -4,8 +4,7 @@ The renderer runs sandboxed (`contextIsolation: true`, `sandbox: true`,
 `nodeIntegration: false` — see `src/main/config.ts`), so it can't import
 `electron` directly. All renderer↔main traffic goes through the typed
 preload bridge exposed in `src/preload/index.ts` as `window.electron.*`
-and a few sibling globals (`window.fileUtils`, `window.path`,
-`window.uploader`, etc.).
+and a few sibling globals (`window.fileUtils`, `window.path`, etc.).
 
 Channel names are typed by the contract in `src/shared/types/ipc.ts` —
 wrong channel, wrong arg arity, or wrong return shape all fail at
@@ -60,9 +59,8 @@ off()
 
 `once()` and `removeAllListeners()` follow the same shape. For
 filesystem and path helpers, prefer the typed convenience APIs already
-exposed via `window.fileUtils.*`, `window.path.*`, `window.uploader.*`,
-etc. — they wrap the underlying `mt::fs::*` / `mt::uploader::*` channels
-and keep call sites short.
+exposed via `window.fileUtils.*` and `window.path.*`; they keep call sites
+short and preserve the sandbox boundary.
 
 ## Main side
 

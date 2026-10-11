@@ -13,6 +13,7 @@ import Accessor from './app/accessor'
 import App from './app'
 import { t } from './i18n'
 import { registerSandboxIpcHandlers } from './ipc'
+import { setApplicationMenu } from './ipc/window'
 import { setPlantumlServerSource } from './ipc/diagram'
 
 // Set version strings into global and process.versions
@@ -97,6 +98,7 @@ app.on('browser-window-created', (_, window) => {
 let accessor: Accessor
 try {
   accessor = new Accessor(appEnvironment)
+  setApplicationMenu(accessor.menu)
 } catch (err) {
   const errorObj = err instanceof Error ? err : new Error(String(err))
   const msgHint = errorObj.message.includes('Config schema violation')

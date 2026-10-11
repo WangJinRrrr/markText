@@ -24,7 +24,6 @@
       "export": "导出",
       "exportHtml": "导出为 HTML",
       "exportPdf": "导出为 PDF",
-      "convertWithPandoc": "使用 Pandoc 转换",
       "import": "导入",
       "print": "打印",
       "closeTab": "关闭标签页",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "切换目录",
       "reloadImages": "重新加载图片",
       "showDeveloperTools": "显示开发者工具",
-      "reloadWindow": "重新加载窗口"
+      "reloadWindow": "重新加载窗口",
+      "notebookRepositoryManager": "笔记仓库管理器"
     },
     "format": {
       "format": "格式",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryBase": "相对图片的复制位置",
         "imageRelativeDirectoryName": "相对图片文件夹名称",
         "fileSortOrder": "打开文件夹中文件的排序顺序：升序或降序",
-        "openedFilesInSidebar": "是否在侧边栏中显示已打开文件",
-        "showPandocConvert": "显示 Pandoc 转换菜单。需要先安装 Pandoc。"
+        "openedFilesInSidebar": "是否在侧边栏中显示已打开文件"
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "恢复所有已打开的文件和文件夹",
         "selectFolder": "选择文件夹",
         "openBlankPage": "打开空白页"
-      },
-      "pandoc": {
-        "title": "Pandoc 转换",
-        "description": "显示 Pandoc 转换菜单",
-        "detailedDescription": "需要先安装 Pandoc",
-        "found": "已找到：{path}",
-        "notFound": "未找到",
-        "recheck": "重新检测"
       },
       "sidebar": {
         "title": "侧边栏",
@@ -593,7 +584,6 @@
     "image": {
       "title": "图片",
       "actions": {
-        "upload": "上传到云端",
         "folder": "复制到文件夹",
         "path": "使用绝对路径"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "相对于文件夹",
         "relativeFolderName": "相对文件夹名称",
         "filenameNote": "文件名将自动生成。"
-      },
-      "uploader": {
-        "title": "图片上传器",
-        "currentUploader": "当前上传器：{name}",
-        "picgoNotInstalled": "PicGo 未安装",
-        "picgoInstalled": "PicGo 已安装",
-        "picgoDetectionFailed": "PicGo 检测失败",
-        "debugInfo": "调试信息",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "选择安装方式：",
-        "retestPicgo": "重新检测",
-        "lastDetectionTime": "上次检测时间",
-        "picgoDetection": "PicGo 检测",
-        "usageGuide": {
-          "title": "PicGo 基本使用说明",
-          "step1": "配置上传器",
-          "step1Description": "使用以下命令配置 PicGo 上传器：",
-          "step2": "上传图片",
-          "step2Description": "使用以下命令上传图片：",
-          "step3": "查看配置",
-          "step3Description": "使用以下命令查看当前配置：",
-          "documentation": "查看完整文档"
-        },
-        "lastSuccessTime": "上次成功时间",
-        "neverDetected": "从未检测",
-        "neverSuccessful": "从未成功",
-        "scriptDescription": "脚本描述",
-        "scriptLocation": "脚本位置",
-        "save": "保存",
-        "saveConfig": "保存配置",
-        "scriptConfigSaved": "脚本配置已保存",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "CLI 脚本"
-        },
-        "pleaseInstall": "请安装",
-        "scriptPath": "脚本路径"
       },
       "defaultBehavior": "粘贴或拖拽图片到 MarkText 后的默认行为"
     },
@@ -885,7 +836,8 @@
       "devToggleDeveloperTools": "切换开发者工具",
       "devReload": "开发者重载",
       "reloadImages": "重新加载图片",
-      "textDirection": "文本方向"
+      "textDirection": "文本方向",
+      "notebookRepositoryManager": "笔记仓库管理器"
     },
     "tabs": {
       "cycleForward": "向前循环",

@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: Markdown-Editor der nächsten Generation :crescent_moon:</strong><br>
-  Ein einfacher und eleganter Open-Source-Markdown-Editor mit Fokus auf Geschwindigkeit und Benutzerfreundlichkeit.<br>
+  <strong>:high_brightness: Ein leichtgewichtiges Markdown-Notizbuch :crescent_moon:</strong><br>
+  Ein lokales Open-Source-Markdown-Notizbuch für schnelles Schreiben und klare Dateiorganisation.<br>
   <sub>Verfügbar für Linux, macOS und Windows.</sub>
 </div>
 
@@ -125,13 +125,14 @@ MarkText ist ein Open-Source-Markdown-Editor, der von seiner Community unterstü
 ## Funktionen
 
 - Echtzeitvorschau (WYSIWYG) und eine klare, einfache Oberfläche für ein ablenkungsfreies Schreiberlebnis.
-- Unterstützung für [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) und selektive Unterstützung für [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown).
+- Unterstützung für [CommonMark Spec](https://spec.commonmark.org) und [GitHub Flavored Markdown Spec](https://github.github.com/gfm/).
 - Markdown-Erweiterungen wie mathematische Ausdrücke (KaTeX), Front Matter und Emojis.
 - Unterstützung für Absatz- und Inline-Stil-Kurzbefehle zur Verbesserung der Schreibeffizienz.
 - Ausgabe von **HTML**- und **PDF**-Dateien.
 - Verschiedene [Themes](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark** usw.
 - Verschiedene Bearbeitungsmodi: **Quellcode-Modus**, **Schreibmaschinen-Modus**, **Fokus-Modus**.
-- Bilder direkt aus der Zwischenablage einfügen.
+- Ein keyboard-first Notebook-Repository-Manager (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) zum Durchsuchen, Erstellen, Umbenennen, Kopieren, Verschieben, Löschen und Öffnen von Dateien.
+- Bilder lokal in Ordnern oder über Pfade verwalten und direkt aus der Zwischenablage einfügen.
 
 ## Download und Installation
 

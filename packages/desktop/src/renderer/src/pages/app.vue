@@ -8,8 +8,6 @@
         :pathname="pathname"
         :filename="filename"
         :active="windowActive"
-        :word-count="wordCount"
-        :selection-word-count="selectionWordCount"
         :platform="platform"
         :is-saved="isSaved"
       />
@@ -30,6 +28,7 @@
         :platform="platform"
       />
       <command-palette />
+      <notebook-repository-manager />
       <about-dialog />
       <export-setting-dialog />
       <rename />
@@ -49,6 +48,7 @@ import TitleBar from '@/components/titleBar/index.vue'
 import SideBar from '@/components/sideBar/index.vue'
 import AboutDialog from '@/components/about/index.vue'
 import CommandPalette from '@/components/commandPalette/index.vue'
+import NotebookRepositoryManager from '@/components/notebookRepositoryManager/index.vue'
 import ExportSettingDialog from '@/components/exportSettings/index.vue'
 import Rename from '@/components/rename/index.vue'
 import ImportModal from '@/components/import/index.vue'
@@ -79,7 +79,7 @@ const { windowActive, platform, init } = storeToRefs(mainStore)
 const { showTabBar } = storeToRefs(layoutStore)
 const { sourceCode, theme, customCss, textDirection, zoom } = storeToRefs(preferencesStore)
 const { projectTree } = storeToRefs(projectStore)
-const { currentFile, selectionWordCount } = storeToRefs(editorStore)
+const { currentFile } = storeToRefs(editorStore)
 
 const pathname = computed(() => currentFile.value?.pathname)
 const filename = computed(() => currentFile.value?.filename)
@@ -90,7 +90,6 @@ const isSaved = computed(() => currentFile.value?.isSaved)
 // type is `string`. The `<editor-with-tabs>` mount is still gated.
 const markdown = computed<string>(() => currentFile.value?.markdown ?? '')
 const cursor = computed(() => currentFile.value?.cursor)
-const wordCount = computed(() => currentFile.value?.wordCount)
 // `muyaIndexCursor` is loosely typed as `unknown` on the editor store; the
 // downstream prop expects `Object | undefined`. Cast at the boundary.
 const muyaIndexCursor = computed<Record<string, unknown> | undefined>(
@@ -167,11 +166,9 @@ onMounted(async () => {
   listenForMainStore.LISTEN_FOR_EDIT()
   preferencesStore.LISTEN_FOR_VIEW()
   listenForMainStore.LISTEN_FOR_SHOW_DIALOG()
-  listenForMainStore.LISTEN_FOR_PANDOC_EXPORT()
   listenForMainStore.LISTEN_FOR_PARAGRAPH_INLINE_STYLE()
   projectStore.LISTEN_FOR_UPDATE_PROJECT()
   projectStore.LISTEN_FOR_LOAD_PROJECT()
-  projectStore.LISTEN_FOR_SIDEBAR_CONTEXT_MENU()
   autoUpdateStore.LISTEN_FOR_UPDATE()
   preferencesStore.ASK_FOR_USER_PREFERENCE()
   preferencesStore.LISTEN_TOGGLE_VIEW()

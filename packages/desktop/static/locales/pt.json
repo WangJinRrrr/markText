@@ -24,7 +24,6 @@
       "export": "Exportar",
       "exportHtml": "Exportar como HTML",
       "exportPdf": "Exportar como PDF",
-      "convertWithPandoc": "Converter com o Pandoc",
       "import": "Importar",
       "print": "Imprimir",
       "closeTab": "Fechar Aba",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "Alternar Índice",
       "reloadImages": "Recarregar Imagens",
       "showDeveloperTools": "Mostrar Ferramentas de Desenvolvedor",
-      "reloadWindow": "Recarregar Janela"
+      "reloadWindow": "Recarregar Janela",
+      "notebookRepositoryManager": "Gerenciador de repositório de notas"
     },
     "format": {
       "format": "Formato",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryBase": "Onde as imagens relativas são copiadas",
         "imageRelativeDirectoryName": "O nome da pasta de imagem relativa",
         "fileSortOrder": "Ordem de classificação dos arquivos nas pastas abertas: ascendente ou descendente.",
-        "openedFilesInSidebar": "Se os arquivos abertos são mostrados na barra lateral.",
-        "showPandocConvert": "Mostrar o menu de conversão do Pandoc. Requer o Pandoc instalado."
+        "openedFilesInSidebar": "Se os arquivos abertos são mostrados na barra lateral."
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "Restaurar todos os arquivos e pastas abertos",
         "selectFolder": "Selecionar Pasta",
         "openBlankPage": "Abrir página em branco"
-      },
-      "pandoc": {
-        "title": "Conversão com Pandoc",
-        "description": "Mostrar o menu de conversão do Pandoc",
-        "detailedDescription": "Requer o Pandoc instalado",
-        "found": "Encontrado: {path}",
-        "notFound": "Não encontrado",
-        "recheck": "Verificar novamente"
       },
       "sidebar": {
         "title": "Barra Lateral",
@@ -593,7 +584,6 @@
     "image": {
       "title": "Imagem",
       "actions": {
-        "upload": "Enviar para nuvem",
         "folder": "Copiar para pasta",
         "path": "Usar caminho absoluto"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "Relativa à pasta",
         "relativeFolderName": "Nome da pasta relativa",
         "filenameNote": "O nome do arquivo será gerado automaticamente."
-      },
-      "uploader": {
-        "title": "Carregador de Imagens",
-        "currentUploader": "Uploader atual: {name}",
-        "picgoNotInstalled": "PicGo não está instalado",
-        "picgoInstalled": "PicGo está instalado",
-        "picgoDetectionFailed": "Detecção do PicGo falhou",
-        "debugInfo": "Informações de Debug",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "Escolha o méde instalação:",
-        "retestPicgo": "Testar novamente",
-        "lastDetectionTime": "Última detecção",
-        "usageGuide": {
-          "title": "Guia básico de uso do PicGo",
-          "step1": "Configurar carregador",
-          "step1Description": "Use o seguinte comando para configurar o carregador PicGo:",
-          "step2": "Carregar imagens",
-          "step2Description": "Use o seguinte comando para carregar imagens:",
-          "step3": "Ver configuração",
-          "step3Description": "Use o seguinte comando para ver a configuração atual:",
-          "documentation": "Ver documentação completa"
-        },
-        "scriptDescription": "Descrição do Script",
-        "scriptLocation": "Localização do Script",
-        "save": "Salvar",
-        "saveConfig": "Salvar Configuração",
-        "scriptConfigSaved": "Configuração de script salva",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "Script CLI"
-        },
-        "pleaseInstall": "Por favor instale",
-        "scriptPath": "Caminho do script",
-        "picgoDetection": "Detecção do PicGo",
-        "lastSuccessTime": "Última vez bem-sucedida",
-        "neverDetected": "Nunca detectado",
-        "neverSuccessful": "Nunca bem-sucedido"
       },
       "defaultBehavior": "O comportamento padrão após colar ou arrastar a imagem para o MarkText"
     },
@@ -885,7 +836,8 @@
       "reloadImages": "Recarregar Imagens",
       "textDirection": "Direção do Texto",
       "actualSize": "Tamanho real",
-      "devToggleDeveloperTools": "Alternar ferramentas de desenvolvedor"
+      "devToggleDeveloperTools": "Alternar ferramentas de desenvolvedor",
+      "notebookRepositoryManager": "Gerenciador de repositório de notas"
     },
     "tabs": {
       "cycleForward": "Ciclar para Frente",

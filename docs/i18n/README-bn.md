@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: আধুনিক প্রজন্মের Markdown এডিটর :crescent_moon:</strong><br>
-  একটি সাধারণ এবং অত্যাধুনিক ওপেন-সোর্স Markdown এডিটর যা গতি এবং ব্যবহারযোগ্যতার দিকে গুরুত্ত দেয়।<br>
+  <strong>:high_brightness: একটি হালকা Markdown নোটবুক :crescent_moon:</strong><br>
+  দ্রুত লেখা ও পরিষ্কার ফাইল সংগঠনের জন্য তৈরি একটি স্থানীয়-প্রথম ওপেন-সোর্স Markdown নোটবুক।<br>
   <sub>Linux, macOS এবং Windows-এর জন্য।</sub>
 </div>
 
@@ -127,13 +127,14 @@ MarkText একটি ওপেন-সোর্স Markdown এডিটর, য
 ## বৈশিষ্ট্য
 
 - রিয়েলটাইম প্রিভিউ (WYSIWYG) এবং পরিচ্ছন্ন, আধুনিক ইন্টারফেস আপনাকে গভীর মনোযোগের সাথে লেখার অভিজ্ঞতা দেয়।
-- [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) এবং আংশিকভাবে [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) সমর্থন করে।
+- [CommonMark Spec](https://spec.commonmark.org) এবং [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) সমর্থন করে।
 - Markdown এক্সটেনশন যেমন গণিতের অভিব্যক্তি (KaTeX), front matter এবং emoji সমর্থন করে।
 - দ্রুত লেখার জন্য paragraph ও inline style shortcut সমর্থন করে।
 - **HTML** এবং **PDF** ফাইলে এক্সপোর্ট করা যায়।
 - বিভিন্ন [theme](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark** ইত্যাদি।
 - বিভিন্ন এডিটিং মোড: **Source Code mode**, **Typewriter mode**, **Focus mode**।
-- ক্লিপবোর্ড থেকে সরাসরি ছবি পেস্ট করা যায়।
+- কীবোর্ডে চালু করা নোট রিপোজিটরি ম্যানেজার (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) দিয়ে ফাইল ব্রাউজ, তৈরি, নাম পরিবর্তন, কপি, সরানো, মুছে ফেলা ও খোলা যায়।
+- ফোল্ডার বা পাথের মাধ্যমে স্থানীয় ছবি ব্যবস্থাপনা এবং ক্লিপবোর্ড থেকে সরাসরি ছবি পেস্ট করা যায়।
 
 ## ডাউনলোড ও ইনস্টলেশন
 

@@ -24,7 +24,6 @@
       "export": "Exportieren",
       "exportHtml": "Als HTML exportieren",
       "exportPdf": "Als PDF exportieren",
-      "convertWithPandoc": "Mit Pandoc konvertieren",
       "import": "Importieren",
       "print": "Drucken",
       "closeTab": "Tab schließen",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "Inhaltsverzeichnis umschalten",
       "reloadImages": "Bilder neu laden",
       "showDeveloperTools": "Entwicklertools anzeigen",
-      "reloadWindow": "Fenster neu laden"
+      "reloadWindow": "Fenster neu laden",
+      "notebookRepositoryManager": "Notizbuch-Repository-Manager"
     },
     "format": {
       "format": "Format",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryBase": "Wohin relative Bilder kopiert werden",
         "imageRelativeDirectoryName": "Der relative Bildordner-Name",
         "fileSortOrder": "Sortierreihenfolge für Dateien in geöffneten Ordnern: aufsteigend oder absteigend.",
-        "openedFilesInSidebar": "Ob geöffnete Dateien in der Seitenleiste angezeigt werden sollen.",
-        "showPandocConvert": "Pandoc-Konvertierungsmenü anzeigen. Erfordert eine Pandoc-Installation."
+        "openedFilesInSidebar": "Ob geöffnete Dateien in der Seitenleiste angezeigt werden sollen."
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "Alle geöffneten Dateien und Ordner wiederherstellen",
         "selectFolder": "Ordner auswählen",
         "openBlankPage": "Leere Seite öffnen"
-      },
-      "pandoc": {
-        "title": "Pandoc-Konvertierung",
-        "description": "Pandoc-Konvertierungsmenü anzeigen",
-        "detailedDescription": "Erfordert eine Pandoc-Installation",
-        "found": "Gefunden: {path}",
-        "notFound": "Nicht gefunden",
-        "recheck": "Erneut prüfen"
       },
       "sidebar": {
         "title": "Seitenleiste",
@@ -593,7 +584,6 @@
     "image": {
       "title": "Bild",
       "actions": {
-        "upload": "In die Cloud hochladen",
         "folder": "In Ordner kopieren",
         "path": "Absoluten Pfad verwenden"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "Relativ zum Ordner",
         "relativeFolderName": "Name des relativen Ordners",
         "filenameNote": "Der Dateiname wird automatisch generiert."
-      },
-      "uploader": {
-        "title": "Bild-Uploader",
-        "currentUploader": "Aktueller Uploader: {name}",
-        "picgoNotInstalled": "PicGo nicht installiert",
-        "picgoInstalled": "PicGo installiert",
-        "picgoDetectionFailed": "PicGo-Erkennung fehlgeschlagen",
-        "debugInfo": "Debug-Informationen",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "Installationsmethode wählen:",
-        "retestPicgo": "Erneut testen",
-        "lastDetectionTime": "Letzte Erkennungszeit",
-        "usageGuide": {
-          "title": "PicGo Grundlegende Anleitung",
-          "step1": "Uploader konfigurieren",
-          "step1Description": "Verwenden Sie den folgenden Befehl, um den PicGo-Uploader zu konfigurieren:",
-          "step2": "Bilder hochladen",
-          "step2Description": "Verwenden Sie den folgenden Befehl, um Bilder hochzuladen:",
-          "step3": "Konfiguration anzeigen",
-          "step3Description": "Verwenden Sie den folgenden Befehl, um die aktuelle Konfiguration anzuzeigen:",
-          "documentation": "Vollständige Dokumentation anzeigen"
-        },
-        "scriptDescription": "Skriptbeschreibung",
-        "scriptLocation": "Skriptort",
-        "save": "Speichern",
-        "saveConfig": "Konfiguration speichern",
-        "scriptConfigSaved": "Skriptkonfiguration gespeichert",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "CLI-Skript"
-        },
-        "pleaseInstall": "Bitte installieren",
-        "scriptPath": "Skriptpfad",
-        "picgoDetection": "PicGo-Erkennung",
-        "lastSuccessTime": "Letzte erfolgreiche Zeit",
-        "neverDetected": "Nie erkannt",
-        "neverSuccessful": "Nie erfolgreich"
       },
       "defaultBehavior": "Standardverhalten nach dem Einfügen oder Ziehen eines Bildes in MarkText"
     },
@@ -885,7 +836,8 @@
       "reloadImages": "Bilder neu laden",
       "textDirection": "Textrichtung",
       "actualSize": "Tatsächliche Größe",
-      "devToggleDeveloperTools": "Entwicklertools umschalten"
+      "devToggleDeveloperTools": "Entwicklertools umschalten",
+      "notebookRepositoryManager": "Notizbuch-Repository-Manager"
     },
     "tabs": {
       "cycleForward": "Vorwärts wechseln",

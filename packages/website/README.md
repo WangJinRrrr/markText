@@ -1,249 +1,81 @@
 # MarkText Website
 
+This package contains the official MarkText website and its user/developer documentation. It lives in the MarkText monorepo alongside the Electron desktop app and the Muya editor engine.
 
+The site is built with Next.js and React, and renders the Markdown content under `content/docs/`. The documentation describes the current lightweight, local-first notebook application, including its repository manager, Markdown editor, themes, exports, and local image handling.
 
-[![Built with React](https://img.shields.io/badge/React-brightgreen?logo=react&logoColor=white)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-purple?logo=vite&logoColor=white)](https://vitejs.dev/)
+## Prerequisites
 
-The official website for [MarkText](https://github.com/marktext/marktext) - A simple and elegant markdown editor.
+- Node.js >= 20.19.0
+- pnpm >= 10
 
-## ✨ Features
-
-- 🚀 **Modern Stack**: Built with React 18 + TypeScript + Vite
-- 📝 **Live Preview**: Interactive markdown editor with real-time rendering
-- 🎨 **Multiple Themes**: Support for Dark, Graphite, Material Dark, One Dark, and Ulysses themes
-- 📊 **Diagram Support**: Mermaid diagrams integration for flowcharts, sequence diagrams, and more
-- 🧮 **Math Rendering**: KaTeX support for mathematical formulas
-- 💅 **Syntax Highlighting**: Prism.js integration for code blocks
-- 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
-
-## 📋 Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-- **Node.js**: >= 16.0.0 (recommended: LTS version)
-- **pnpm**: >= 8.0.0 (recommended package manager)
-
-To install pnpm globally:
-
-```bash
-npm install -g pnpm
-```
-
-## 🚀 Getting Started
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/marktext/website.git
-cd website
-```
-
-2. Install dependencies:
+Install dependencies from the repository root:
 
 ```bash
 pnpm install
 ```
 
-### Development
+## Development
 
-Start the development server with hot-reload:
-
-```bash
-pnpm dev
-```
-
-The application will be available at `http://localhost:5173` (or the next available port).
-
-### Building for Production
-
-Build the application for production:
+From the repository root:
 
 ```bash
-pnpm build
+pnpm --filter marktext-website dev
 ```
 
-The optimized files will be generated in the `build/` directory.
+The development server starts on the port reported by Next.js. The docs index is generated automatically when it is missing.
 
-### Preview Production Build
-
-Preview the production build locally:
+To regenerate the searchable documentation index explicitly:
 
 ```bash
-pnpm preview
+pnpm --filter marktext-website docs:index
 ```
 
-### Code Quality
+## Production
 
-Run TypeScript type checking:
+Build and preview the site with:
 
 ```bash
-pnpm type-check
+pnpm --filter marktext-website build
+pnpm --filter marktext-website start
 ```
 
-Run ESLint to check code quality:
+The production build also regenerates `public/docs-index.json` from the registered documentation pages and their Markdown sources.
+
+## Structure
+
+```text
+packages/website/
+├── content/docs/       User and developer Markdown documentation
+├── public/             Static assets and generated docs index
+├── src/app/            Next.js routes and layouts
+├── src/components/     Website and documentation UI
+├── src/lib/            Documentation registry, Markdown loading, and utilities
+├── scripts/             Documentation index generation
+├── package.json         Website scripts and dependencies
+└── tsconfig.json        TypeScript configuration
+```
+
+`src/lib/docs-nav.ts` is the authoritative documentation registry. When adding or removing a documentation page, update the registry and run `pnpm --filter marktext-website docs:index`.
+
+## Documentation scope
+
+The desktop application owns the product behavior. Keep user-facing documentation aligned with the current app, especially these boundaries:
+
+- The notebook repository manager owns repository file and folder organization.
+- The sidebar is for navigation, search, and the table of contents.
+- Images are persisted locally using folder- or path-based workflows.
+- Pandoc conversion and cloud image uploader integrations are not part of the current desktop app.
+
+## Contributing
+
+Documentation and website changes should follow the repository contribution guidelines in [`.github/CONTRIBUTING.md`](../../.github/CONTRIBUTING.md). Run the website type check and build for changes to the website code or documentation registry:
 
 ```bash
-pnpm lint
+pnpm --filter marktext-website type-check
+pnpm --filter marktext-website build
 ```
 
-## 🚀 Deployment
+## License
 
-### Deploy to GitHub Pages
-
-This project is configured to automatically deploy to GitHub Pages using GitHub Actions.
-
-#### Setup
-
-1. Go to your repository **Settings** → **Pages**
-2. Under **Source**, select **GitHub Actions**
-3. Push to the `master` branch or manually trigger the workflow
-
-The site will be available at: `https://marktext.github.io/website/`
-
-#### Manual Deployment
-
-You can also trigger the deployment manually:
-
-1. Go to **Actions** tab in your GitHub repository
-2. Select **Deploy to GitHub Pages** workflow
-3. Click **Run workflow**
-
-#### Local Preview of Production Build
-
-To preview the production build locally before deploying:
-
-```bash
-pnpm build
-pnpm preview
-```
-
-## 📁 Project Structure
-
-```
-website/
-├── src/
-│   ├── assets/          # Static assets (images, SVGs)
-│   │   └── sponsor/     # Sponsor logos
-│   ├── components/      # React components
-│   │   ├── Feature.tsx  # Main feature showcase with markdown preview
-│   │   ├── Footer.tsx   # Website footer
-│   │   ├── Sponsor.tsx  # Sponsors section
-│   │   ├── Theme.tsx    # Theme switcher
-│   │   └── TitleBar.tsx # Navigation bar
-│   ├── markdowns/       # Markdown demo files
-│   ├── muya/            # Muya editor library
-│   ├── themes/          # Theme CSS files
-│   ├── types/           # TypeScript type definitions
-│   ├── utils/           # Utility functions
-│   │   ├── markdownToHtml.ts  # Markdown to HTML converter
-│   │   ├── scrollTo.ts        # Smooth scrolling utilities
-│   │   ├── theme.ts           # Theme management
-│   │   └── themeColor.ts      # Theme color definitions
-│   ├── App.tsx          # Root component
-│   ├── main.tsx         # Application entry point
-│   └── app.global.css   # Global styles
-├── public/              # Public static files
-├── build/               # Production build output (generated)
-├── index.html           # HTML template
-├── package.json         # Project dependencies and scripts
-├── tsconfig.json        # TypeScript configuration
-├── vite.config.js       # Vite configuration
-└── README.md           # This file
-```
-
-## 🛠️ Tech Stack
-
-### Core
-
-- **React** - UI library
-- **TypeScript** - Type-safe JavaScript
-- **Vite** - Build tool and dev server
-
-### Libraries
-
-- **Mermaid** - Diagram and flowchart rendering
-- **KaTeX** - Math typesetting
-- **Prism.js** - Syntax highlighting
-- **DOMPurify** - HTML sanitization
-- **Axios** - HTTP client
-- **GitHub Markdown CSS** - Markdown styling
-
-### Development Tools
-
-- **ESLint** - Code linting
-- **TypeScript ESLint** - TypeScript-specific linting rules
-- **Vite Plugin SVGR** - SVG to React component conversion
-
-## 🎨 Themes
-
-The website supports multiple editor themes:
-
-- **Cadmium Light** (Default)
-- **Dark** - Dark theme with high contrast
-- **Graphite** - Elegant dark gray theme
-- **Material Dark** - Material Design inspired dark theme
-- **One Dark** - Atom One Dark theme
-- **Ulysses** - Minimalist theme inspired by Ulysses app
-
-## 📝 Markdown Features
-
-The editor preview supports:
-
-- ✅ **CommonMark** and **GitHub Flavored Markdown**
-- ✅ Task lists with checkboxes
-- ✅ Tables with alignment
-- ✅ Code blocks with syntax highlighting
-- ✅ Math equations (inline and block)
-- ✅ Mermaid diagrams
-- ✅ HTML sanitization for security
-- ✅ Auto-linking URLs
-- ✅ Emoji support
-
-## 🔧 Configuration
-
-### Vite Configuration
-
-The `vite.config.js` includes:
-
-- Custom markdown plugin for `.md` file imports
-- SVGR plugin for SVG component generation
-- Optimized build settings
-
-### TypeScript Configuration
-
-Two TypeScript configs are used:
-
-- `tsconfig.json` - App source code configuration
-- `tsconfig.node.json` - Build tools configuration
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
-
-## 🔗 Links
-
-- **Main Project**: [MarkText Editor](https://github.com/marktext/marktext)
-- **Website**: [https://marktext.me](https://marktext.me)
-- **Documentation**: [MarkText Docs](https://marktext.me/docs)
-
-## 💖 Sponsors
-
-Special thanks to all our sponsors for supporting the MarkText project!
-
----
-
-Made with ❤️ by the MarkText Team
+MarkText is distributed under the MIT License. See [`../../LICENSE`](../../LICENSE).

@@ -2,6 +2,10 @@
 :root {
   --titleBarHeight: 32px;
   --editorAreaWidth: 750px;
+  --controlRadius: 4px;
+  --shellBorder: 1px solid var(--floatBorderColor);
+  --shellFocusRing: 0 0 0 2px var(--themeColor20);
+  --shellSpace: 8px;
 
   /*editor*/
   /*Theme color cluster*/
@@ -41,7 +45,7 @@
   --buttonBorder: 1px solid #dcdfe6;
   --buttonShadow: none;
   --buttonFontColorHover: var(--buttonFontColor);
-  --buttonBgColorHover: linear-gradient(#f9f9f9, #f2f2f2);
+  --buttonBgColorHover: #f4f5f6;
   --buttonBorderHover: var(--buttonBorder);
   --buttonFontColorActive: var(--buttonFontColor);
   --buttonBgColorActive: #f0f0f0;
@@ -51,7 +55,7 @@
   --buttonPrimaryFontColor: #ffffff;
   --buttonPrimaryBgColor: var(--themeColor);
   --buttonPrimaryBorder: none;
-  --buttonPrimaryShadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+  --buttonPrimaryShadow: none;
   --buttonPrimaryFontColorHover: var(--buttonPrimaryFontColor);
   --buttonPrimaryBgColorHover: var(--buttonPrimaryBgColor);
   --buttonPrimaryBorderHover: var(--buttonPrimaryBorder);
@@ -113,7 +117,7 @@
 }
 
 ::-webkit-scrollbar:vertical {
-  width: 12px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -126,6 +130,12 @@
 
 :focus {
   outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focusColor);
+  outline-offset: -2px;
+  box-shadow: var(--shellFocusRing);
 }
 
 html,

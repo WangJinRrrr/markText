@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: Éditeur Markdown nouvelle génération :crescent_moon:</strong><br>
-  Un éditeur Markdown open source, simple et élégant, axé sur la vitesse et la facilité d'utilisation.<br>
+  <strong>:high_brightness: Un carnet Markdown léger :crescent_moon:</strong><br>
+  Un carnet Markdown open source et local pour écrire rapidement et organiser clairement ses fichiers.<br>
   <sub>Disponible pour Linux, macOS et Windows.</sub>
 </div>
 
@@ -125,13 +125,14 @@ MarkText est un éditeur Markdown open-source soutenu par sa communauté. Si Mar
 ## Fonctionnalités
 
 - Aperçu en temps réel (WYSIWYG) et interface propre et simple pour une expérience d'écriture sans distraction.
-- Prise en charge de [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) et prise en charge sélective de [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown).
+- Prise en charge de [CommonMark Spec](https://spec.commonmark.org) et [GitHub Flavored Markdown Spec](https://github.github.com/gfm/).
 - Extensions Markdown telles que les expressions mathématiques (KaTeX), le front matter et les emojis.
 - Raccourcis de paragraphe et de style en ligne pour améliorer votre efficacité d'écriture.
 - Export de fichiers **HTML** et **PDF**.
 - Divers [thèmes](https://marktext.me/docs/themes) : **Cadmium Light**, **Material Dark**, etc.
 - Divers modes d'édition : **mode code source**, **mode machine à écrire**, **mode focus**.
-- Coller des images directement depuis le presse-papiers.
+- Gestionnaire de dépôt accessible au clavier (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) pour parcourir, créer, renommer, copier, déplacer, supprimer et ouvrir les fichiers.
+- Gestion locale des images par dossier ou chemin, avec collage direct depuis le presse-papiers.
 
 ## Téléchargement et Installation
 

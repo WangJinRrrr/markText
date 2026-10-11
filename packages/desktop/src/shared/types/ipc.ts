@@ -28,12 +28,10 @@ import type {
   SerializedStat,
   LineEnding,
   FileChangeDetail,
-  PandocExportPayload,
   UnsavedFile
 } from './files'
 import type { BufferedState as BufferedStateType } from './bufferedState'
 import type { MenuTemplate, MenuPopupPosition } from './menu'
-import type { PandocCommandInfo } from './pandoc'
 
 export interface SaveDialogRequest {
   title?: string
@@ -45,6 +43,16 @@ export type PlantumlFetchResult =
   | { ok: true; mime: string; data: Uint8Array }
   | { ok: false; error: string }
 
+export interface RepositoryEntry {
+  pathname: string
+  name: string
+  isDirectory: boolean
+  isFile: boolean
+  isMarkdown: boolean
+  isSymbolicLink: boolean
+  children?: RepositoryEntry[]
+}
+
 // =================================================================
 // Invoke channels (renderer → main, returns Promise<T>)
 // =================================================================
@@ -55,7 +63,6 @@ export interface IpcInvokeChannels {
   'mt::clipboard::guess-file-path': { args: []; ret: string | null }
   'mt::clipboard::read-text': { args: []; ret: string }
   'mt::clipboard::write-image': { args: [png: Uint8Array]; ret: boolean }
-  'mt::cmd::exists': { args: [name: string]; ret: boolean }
   'mt::diagram::fetch-plantuml': {
     args: [server: string, encoded: string, format: 'svg' | 'png']
     ret: PlantumlFetchResult
@@ -87,9 +94,20 @@ export interface IpcInvokeChannels {
     ret: { defaultKeybindings: Map<string, string>; userKeybindings: Map<string, string> }
   }
   'mt::keybinding-save-user-keybindings': { args: [bindings: unknown]; ret: boolean }
-  'mt::pandoc::command': { args: []; ret: PandocCommandInfo }
   'mt::paths::is-image': { args: [path: string]; ret: boolean }
   'mt::rg::start': { args: [req: unknown]; ret: { searchId: string } }
+  'mt::repository::copy': {
+    args: [root: string, source: string, parent: string, name: string, type: 'copy' | 'cut']
+    ret: void
+  }
+  'mt::repository::list': { args: [root: string]; ret: RepositoryEntry }
+  'mt::repository::open': { args: [root: string, target: string]; ret: boolean }
+  'mt::repository::create': {
+    args: [root: string, parent: string, name: string, type: 'file' | 'directory']
+    ret: void
+  }
+  'mt::repository::rename': { args: [root: string, source: string, name: string]; ret: void }
+  'mt::repository::trash': { args: [root: string, target: string]; ret: boolean }
   'mt::shell::open-external': { args: [url: string]; ret: void }
   'mt::shell::open-path': { args: [fullPath: string]; ret: string }
   'mt::spellchecker-get-available-dictionaries': { args: []; ret: string[] }
@@ -97,7 +115,6 @@ export interface IpcInvokeChannels {
   'mt::spellchecker-remove-word': { args: [word: string]; ret: boolean }
   'mt::spellchecker-set-enabled': { args: [enabled: boolean]; ret: void }
   'mt::spellchecker-switch-language': { args: [language: string]; ret: void }
-  'mt::uploader::upload': { args: [req: unknown]; ret: unknown }
   'mt::win::is-fullscreen': { args: []; ret: boolean }
   'mt::win::is-maximized': { args: []; ret: boolean }
   // Main derives the BrowserWindow via BrowserWindow.fromWebContents(e.sender);
@@ -180,7 +197,6 @@ export interface IpcSendChannels {
     options: SaveOptions,
     defaultPath: string
   ]
-  'mt::response-pandoc-export': [payload: PandocExportPayload]
   'mt::response-print': []
   'mt::rg::cancel': [searchId: string]
   'mt::save-and-close-tabs': [tabs: unknown[]]
@@ -205,6 +221,7 @@ export interface IpcSendChannels {
   'mt::window-initialized': []
   'mt::window-tab-closed': [pathname: string]
   'mt::window-toggle-always-on-top': []
+  'mt::popup-file-menu': [position: { x: number; y: number }]
   'mt::window::drop': [payload: unknown]
   'screen-capture': [payload: unknown]
   'set-image-folder-path': [path: string]
@@ -259,7 +276,6 @@ export interface IpcMainEventChannels {
   'mt::editor-rename-file': []
   'mt::execute-command-by-id': [commandId: string]
   'mt::export-success': [payload: { type: string; filePath: string; linksMedia?: boolean }]
-  'mt::export-with-pandoc': [target: string]
   'mt::file-saved': [tabId: string]
   'mt::force-close-tabs-by-id': [tabIds: string[]]
   'mt::invalidate-image-cache': []
@@ -274,7 +290,6 @@ export interface IpcMainEventChannels {
     options?: TabOptions,
     selected?: boolean
   ]
-  'mt::pandoc-not-exists': [opts: Record<string, unknown>]
   'mt::print-service-clearup': []
   'mt::rg::cancelled': [payload: unknown]
   'mt::rg::done': [payload: unknown]
@@ -286,6 +301,7 @@ export interface IpcMainEventChannels {
   'mt::set-pathname': [payload: { id: string; pathname: string; filename: string }]
   'mt::set-view-layout': [layout: unknown]
   'mt::show-command-palette': []
+  'mt::show-notebook-repository-manager': []
   'mt::show-export-dialog': [type: ExportType]
   'mt::show-notification': [payload: unknown]
   'mt::spelling-replace-misspelling': [payload: unknown]

@@ -288,7 +288,8 @@ onBeforeUnmount(() => {
   flex-direction: row;
   height: 28px;
   user-select: none;
-  box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+  border-bottom: var(--shellBorder);
   overflow: hidden;
   &:hover > .new-file {
     opacity: 1 !important;
@@ -333,10 +334,17 @@ onBeforeUnmount(() => {
     &:focus {
       outline: none;
     }
+    &:focus-visible {
+      outline: 2px solid var(--focusColor);
+      outline-offset: -2px;
+    }
     &:hover {
+      color: var(--editorColor80);
       background: var(--floatBgColor) !important;
+      box-shadow: inset 0 -2px 0 var(--themeColor50);
     }
     &:hover > .close-icon {
+      color: var(--editorColor80);
       opacity: 1;
     }
     &:hover > .unsaved-dot {

@@ -7,35 +7,24 @@
     :class="[
       {
         current: isSamePath(currentFile?.pathname ?? '', file.pathname),
-        active: file.id === activeItem.id
+        active: isSamePath(activeItem?.pathname ?? '', file.pathname)
       }
     ]"
     @click="handleFileClick"
     @dblclick="handleFileDblClick"
   >
     <file-icon :name="file.name" />
-    <input
-      v-if="renameCache === file.pathname"
-      ref="renameInput"
-      v-model="nameInputValue"
-      type="text"
-      class="rename"
-      @click.stop="noop"
-      @keypress.enter="rename"
-    >
-    <span v-else>{{ file.name }}</span>
+    <span>{{ file.name }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { inject, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/store/project'
 import { useEditorStore } from '@/store/editor'
 import FileIcon from './icon.vue'
-import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
-import { renameSelectionEnd } from './renameKey'
 import { TREE_ROW_REGISTRY_KEY, toRowKey, type TreeRowRegistry } from './rowRegistry'
 import { isSamePath } from '@/util'
 import type { TreeFileNode } from './types'
@@ -49,7 +38,6 @@ const projectStore = useProjectStore()
 const editorStore = useEditorStore()
 
 const fileEl = ref<HTMLDivElement | null>(null)
-const renameInput = ref<HTMLInputElement | null>(null)
 
 const rowRegistry = inject<TreeRowRegistry | null>(TREE_ROW_REGISTRY_KEY, null)
 
@@ -62,10 +50,7 @@ watch(
   }
 )
 
-const { renameCache } = storeToRefs(projectStore)
-const { nameInputValue } = storeToRefs(projectStore)
 const { activeItem } = storeToRefs(projectStore)
-const { clipboard } = storeToRefs(projectStore)
 const { currentFile, tabs } = storeToRefs(editorStore)
 
 const handleFileClick = (event: MouseEvent): void => {
@@ -94,32 +79,8 @@ const handleFileDblClick = (): void => {
   editorStore.FOCUS_FILE(props.file.pathname)
 }
 
-const noop = (): void => {}
-
-const focusRenameInput = (): void => {
-  // The `v-if` input mounts on the next tick; the store seeds its value.
-  nextTick(() => {
-    if (!renameInput.value) return
-    renameInput.value.focus()
-    renameInput.value.setSelectionRange(0, renameSelectionEnd(props.file.name))
-  })
-}
-
-const rename = (): void => {
-  projectStore.RENAME_IN_SIDEBAR(nameInputValue.value)
-}
-
 onMounted(() => {
-  if (fileEl.value) {
-    rowRegistry?.set(toRowKey(props.file.pathname), fileEl.value)
-    fileEl.value.addEventListener('contextmenu', (event) => {
-      event.preventDefault()
-      projectStore.CHANGE_ACTIVE_ITEM(props.file)
-      showContextMenu(event, !!clipboard.value)
-    })
-  }
-
-  bus.on('SIDEBAR::show-rename-input', focusRenameInput)
+  if (fileEl.value) rowRegistry?.set(toRowKey(props.file.pathname), fileEl.value)
 })
 
 onBeforeUnmount(() => {
@@ -170,16 +131,5 @@ onBeforeUnmount(() => {
 }
 .side-bar-file.active > span {
   color: var(--sideBarTitleColor);
-}
-input.rename {
-  height: 22px;
-  outline: none;
-  margin: 5px 0;
-  padding: 0 8px;
-  color: var(--sideBarColor);
-  border: 1px solid var(--focusColor);
-  background: var(--floatBorderColor);
-  width: 100%;
-  border-radius: 3px;
 }
 </style>

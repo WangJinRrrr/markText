@@ -24,7 +24,6 @@
       "export": "エクスポート",
       "exportHtml": "HTML としてエクスポート",
       "exportPdf": "PDF としてエクスポート",
-      "convertWithPandoc": "Pandoc で変換",
       "import": "インポート",
       "print": "印刷",
       "closeTab": "タブを閉じる",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "目次の切り替え",
       "reloadImages": "画像の再読み込み",
       "showDeveloperTools": "開発者ツールの表示",
-      "reloadWindow": "ウィンドウの再読み込み"
+      "reloadWindow": "ウィンドウの再読み込み",
+      "notebookRepositoryManager": "ノートリポジトリマネージャー"
     },
     "format": {
       "format": "フォーマット",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryBase": "相対画像のコピー先",
         "imageRelativeDirectoryName": "相対画像フォルダー名",
         "fileSortOrder": "開いたフォルダー内のファイルの並べ替え順、昇順または降順",
-        "openedFilesInSidebar": "開いているファイルをサイドバーに表示するかどうか",
-        "showPandocConvert": "Pandoc 変換メニューを表示します。Pandoc がインストールされている必要があります。"
+        "openedFilesInSidebar": "開いているファイルをサイドバーに表示するかどうか"
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "開いていたすべてのファイルとフォルダーを復元",
         "selectFolder": "フォルダーの選択",
         "openBlankPage": "空白ページを開く"
-      },
-      "pandoc": {
-        "title": "Pandoc 変換",
-        "description": "Pandoc 変換メニューを表示",
-        "detailedDescription": "Pandoc がインストールされている必要があります",
-        "found": "検出: {path}",
-        "notFound": "見つかりません",
-        "recheck": "再検出"
       },
       "sidebar": {
         "title": "サイドバー",
@@ -593,7 +584,6 @@
     "image": {
       "title": "画像",
       "actions": {
-        "upload": "クラウドにアップロード",
         "folder": "フォルダーにコピー",
         "path": "絶対パスを使用"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "フォルダー基準",
         "relativeFolderName": "相対フォルダー名",
         "filenameNote": "ファイル名は自動生成されます。"
-      },
-      "uploader": {
-        "title": "画像アップローダー",
-        "currentUploader": "現在のアップローダー: {name}",
-        "picgoNotInstalled": "PicGo がインストールされていません",
-        "picgoInstalled": "PicGo がインストールされています",
-        "picgoDetectionFailed": "PicGo 検出に失敗しました",
-        "debugInfo": "デバッグ情報",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "インストール方法の選択 :",
-        "retestPicgo": "再テスト",
-        "lastDetectionTime": "最後の検出時間",
-        "usageGuide": {
-          "title": "PicGo 基本使用ガイド",
-          "step1": "アップローダーの設定",
-          "step1Description": "以下のコマンドを使用して PicGo アップローダーを設定してください :",
-          "step2": "画像をアップロード",
-          "step2Description": "以下のコマンドを使用して画像をアップロードしてください :",
-          "step3": "設定を表示",
-          "step3Description": "以下のコマンドを使用して現在の設定を表示してください :",
-          "documentation": "完全なドキュメントを表示"
-        },
-        "scriptDescription": "スクリプトの説明",
-        "scriptLocation": "スクリプトの場所",
-        "save": "保存",
-        "saveConfig": "設定を保存",
-        "scriptConfigSaved": "スクリプト設定が保存されました",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "CLI スクリプト"
-        },
-        "pleaseInstall": "インストールしてください",
-        "scriptPath": "スクリプトパス",
-        "picgoDetection": "PicGo 検出",
-        "lastSuccessTime": "最後の成功時刻",
-        "neverDetected": "検出されたことがない",
-        "neverSuccessful": "成功したことがない"
       },
       "defaultBehavior": "MarkText に画像を貼り付けまたはドラッグした後のデフォルト動作"
     },
@@ -885,7 +836,8 @@
       "reloadImages": "画像を再読み込み",
       "textDirection": "テキスト方向",
       "actualSize": "実際のサイズ",
-      "devToggleDeveloperTools": "開発者ツールの切り替え"
+      "devToggleDeveloperTools": "開発者ツールの切り替え",
+      "notebookRepositoryManager": "ノートリポジトリマネージャー"
     },
     "tabs": {
       "cycleForward": "前方に循環",

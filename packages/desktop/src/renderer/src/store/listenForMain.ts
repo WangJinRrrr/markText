@@ -35,13 +35,6 @@ export const useListenForMainStore = defineStore('listenForMain', () => {
     })
   }
 
-  /** Main asked for the document to convert; reply from the editor store. */
-  function LISTEN_FOR_PANDOC_EXPORT(): void {
-    window.electron.ipcRenderer.on('mt::export-with-pandoc', (_e, target) => {
-      useEditorStore().EXPORT_PANDOC(target as string)
-    })
-  }
-
   function LISTEN_FOR_PARAGRAPH_INLINE_STYLE(): void {
     // Pre-migration JS destructured `{ type }` and re-emitted it without a
     // guard. Restore the same shape; bus listeners that expect a payload get
@@ -58,7 +51,6 @@ export const useListenForMainStore = defineStore('listenForMain', () => {
     EDITOR_EDIT_ACTION,
     LISTEN_FOR_EDIT,
     LISTEN_FOR_SHOW_DIALOG,
-    LISTEN_FOR_PANDOC_EXPORT,
     LISTEN_FOR_PARAGRAPH_INLINE_STYLE
   }
 })

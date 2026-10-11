@@ -8,8 +8,8 @@
   </a>
 </div>
 <div dir="rtl" align="center">
-  <strong>:high_brightness: محرر ماركداون من الجيل التالي :crescent_moon:</strong><br>
-  محرر ماركداون مفتوح المصدر بسيط وأنيق يركز على السرعة وسهولة الاستخدام.<br>
+  <strong>:high_brightness: دفتر ملاحظات ماركداون خفيف :crescent_moon:</strong><br>
+  دفتر ملاحظات ماركداون مفتوح المصدر ومحلي يركز على الكتابة السريعة وتنظيم الملفات بوضوح.<br>
   <sub>متاح لنظام Linux وmacOS وWindows.</sub>
 </div>
 
@@ -125,13 +125,14 @@ MarkText هو محرر Markdown مفتوح المصدر يعتمد على دعم
 ## الميزات
 
 - معاينة فورية (WYSIWYG) وواجهة نظيفة وبسيطة للحصول على تجربة كتابة خالية من الإلهاء.
-- دعم [مواصفات CommonMark](https://spec.commonmark.org)، [مواصفات GitHub Flavored Markdown](https://github.github.com/gfm/) ودعم انتقائي لـ [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown).
+- دعم [مواصفات CommonMark](https://spec.commonmark.org) و[مواصفات GitHub Flavored Markdown](https://github.github.com/gfm/).
 - امتدادات ماركداون مثل التعبيرات الرياضية (KaTeX) وfront matter والرموز التعبيرية.
 - دعم اختصارات الفقرات والأساليب المضمنة لتحسين كفاءة الكتابة.
 - إخراج ملفات **HTML** و**PDF**.
 - سمات متنوعة [themes](https://marktext.me/docs/themes): **Cadmium Light**، **Material Dark** وغيرها.
 - أوضاع تحرير متنوعة: **وضع الكود المصدري**، **وضع الآلة الكاتبة**، **وضع التركيز**.
-- لصق الصور مباشرة من الحافظة.
+- مدير مستودع ملاحظات يمكن استدعاؤه من لوحة المفاتيح (`Ctrl+Shift+F12` / `Cmd+Shift+F12`) لتصفح الملفات وإنشائها وإعادة تسميتها ونسخها ونقلها وحذفها وفتحها.
+- إدارة الصور محليًا باستخدام المجلدات أو المسارات، مع إمكانية لصق الصور مباشرة من الحافظة.
 
 ## التنزيل والتثبيت
 

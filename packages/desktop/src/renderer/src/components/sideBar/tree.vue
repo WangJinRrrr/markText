@@ -4,65 +4,6 @@
       <!-- Placeholder -->
     </div>
 
-    <!-- Opened tabs -->
-    <div
-      v-if="openedFilesInSidebar"
-      class="opened-files"
-    >
-      <div class="title">
-        <el-icon
-          class="icon-arrow"
-          :class="{ fold: !showOpenedFiles }"
-          :size="12"
-          @click.stop="toggleOpenedFiles()"
-        >
-          <ArrowRight />
-        </el-icon>
-        <span
-          class="default-cursor text-overflow"
-          @click.stop="toggleOpenedFiles()"
-        >{{
-          t('sideBar.tree.openedFiles')
-        }}</span>
-        <a
-          href="javascript:;"
-          :title="t('sideBar.tree.saveAll')"
-          @click.stop="saveAll(false)"
-        >
-          <svg
-            class="icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-save-all" />
-          </svg>
-        </a>
-        <a
-          href="javascript:;"
-          :title="t('sideBar.tree.closeAll')"
-          @click.stop="saveAll(true)"
-        >
-          <svg
-            class="icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-close-all" />
-          </svg>
-        </a>
-      </div>
-      <div
-        v-show="showOpenedFiles"
-        class="opened-files-list"
-      >
-        <transition-group name="list">
-          <opened-file
-            v-for="tab of tabs"
-            :key="tab.id"
-            :file="tab"
-          />
-        </transition-group>
-      </div>
-    </div>
-
     <!-- Project tree view -->
     <div
       v-if="projectTree"
@@ -70,7 +11,6 @@
     >
       <div
         class="title"
-        @contextmenu.prevent="handleRootContextMenu"
       >
         <el-icon
           class="icon-arrow"
@@ -92,8 +32,8 @@
         ref="treeWrapper"
         class="tree-wrapper"
         tabindex="0"
+        @contextmenu.prevent="showFileMenu"
         @mousedown="handleTreeMouseDown"
-        @focusout="handleTreeFocusOut"
         @keydown="handleTreeKeydown"
       >
         <folder
@@ -102,16 +42,6 @@
           :folder="folder"
           :depth="depth"
         />
-        <input
-          v-show="createCacheDirname === projectTree.pathname"
-          ref="input"
-          v-model="nameInputValue"
-          placeholder="Enter .md file name"
-          type="text"
-          class="new-input"
-          :style="{ 'margin-left': `${depth * 5 + 15}px` }"
-          @keypress.enter="handleInputEnter"
-        >
         <file
           v-for="file of projectTree.files"
           :key="file.id"
@@ -121,8 +51,7 @@
         <div
           v-if="
             projectTree.files.length === 0 &&
-              projectTree.folders.length === 0 &&
-              createCacheDirname !== projectTree.pathname
+              projectTree.folders.length === 0
           "
           class="empty-project"
         >
@@ -157,43 +86,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, provide, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref, provide, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useProjectStore } from '@/store/project'
 import { useEditorStore } from '@/store/editor'
 import { useLayoutStore } from '@/store/layout'
 import { usePreferencesStore } from '@/store/preferences'
 import Folder from './treeFolder.vue'
 import File from './treeFile.vue'
-import OpenedFile from './treeOpenedTab.vue'
 import bus from '../../bus'
-import { showContextMenu } from '../../contextMenu/sideBar'
 import { useI18n } from 'vue-i18n'
 import { ArrowRight } from '@element-plus/icons-vue'
-import { PATH_SEPARATOR } from '@/config'
-import { isMac } from '@/util'
 import { computeRevealScrollTop } from '@/util/revealTreeRow'
-import {
-  isEditableTarget,
-  isInsideTreeScope,
-  isNameInput,
-  keepsSidebarSelection,
-  shouldTrashSelection
-} from './trashKey'
-import { shouldRenameSelection } from './renameKey'
 import { TREE_ROW_REGISTRY_KEY, toRowKey, type TreeRowRegistry } from './rowRegistry'
-import type { TreeNode, TabDescriptor } from './types'
+import type { TreeNode } from './types'
 
 const { t } = useI18n()
 
-const props = defineProps<{
+defineProps<{
   // The project store seeds `projectTree` as `null` until a folder is
   // opened; the template renders the "open project" empty-state behind
   // `v-if="projectTree"`. Type the prop nullable to match runtime + the
   // template guard.
   projectTree: TreeNode | null
-  openedFiles?: TabDescriptor[]
-  tabs?: TabDescriptor[]
 }>()
 
 const depth = 0
@@ -202,11 +116,7 @@ const depth = 0
 // refs reset to expanded on re-open. Back them with localStorage (like the
 // sidebar width) so the state survives a re-mount and app restart.
 const SHOW_DIRECTORIES_KEY = 'side-bar-show-directories'
-const SHOW_OPENED_FILES_KEY = 'side-bar-show-opened-files'
-const readSectionExpanded = (key: string): boolean => localStorage.getItem(key) !== 'false'
-const showDirectories = ref(readSectionExpanded(SHOW_DIRECTORIES_KEY))
-const showOpenedFiles = ref(readSectionExpanded(SHOW_OPENED_FILES_KEY))
-const input = ref<HTMLInputElement | null>(null)
+const showDirectories = ref(localStorage.getItem(SHOW_DIRECTORIES_KEY) !== 'false')
 const treeWrapper = ref<HTMLDivElement | null>(null)
 
 const rowRegistry: TreeRowRegistry = new Map()
@@ -217,44 +127,20 @@ const editorStore = useEditorStore()
 const layoutStore = useLayoutStore()
 const preferencesStore = usePreferencesStore()
 
-// Computed properties
-const { createCache } = storeToRefs(projectStore)
-const { clipboard } = storeToRefs(projectStore)
-const { activeItem } = storeToRefs(projectStore)
-const { renameCache } = storeToRefs(projectStore)
-const { nameInputValue } = storeToRefs(projectStore)
-const { openedFilesInSidebar } = storeToRefs(preferencesStore)
-
-// The createCache state is `{ dirname, type }` while an input is shown, and
-// `{}` otherwise. Expose a typed accessor for the template so we don't have
-// to thread `as any` through every comparison.
-const createCacheDirname = computed<string | undefined>(() => {
-  const cache = createCache.value as { dirname?: string }
-  return cache.dirname
-})
-
 // Methods
 const openFolder = (): void => {
   projectStore.ASK_FOR_OPEN_PROJECT()
 }
 
-const saveAll = (isClose: boolean): void => {
-  editorStore.ASK_FOR_SAVE_ALL(isClose)
-}
-
 const createFile = (): void => {
-  projectStore.CHANGE_ACTIVE_ITEM(props.projectTree)
-  bus.emit('SIDEBAR::new', 'file')
+  bus.emit('show-notebook-repository-manager')
 }
 
-const handleRootContextMenu = (event: MouseEvent): void => {
-  projectStore.CHANGE_ACTIVE_ITEM(props.projectTree)
-  showContextMenu(event, !!clipboard.value)
-}
-
-const toggleOpenedFiles = (): void => {
-  showOpenedFiles.value = !showOpenedFiles.value
-  localStorage.setItem(SHOW_OPENED_FILES_KEY, String(showOpenedFiles.value))
+const showFileMenu = (event: MouseEvent): void => {
+  window.electron.ipcRenderer.send('mt::popup-file-menu', {
+    x: event.clientX,
+    y: event.clientY
+  })
 }
 
 const setShowDirectories = (value: boolean): void => {
@@ -319,19 +205,6 @@ const handleRevealPath = (pathname: unknown): void => {
   revealPath(typeof pathname === 'string' ? pathname : null, { force: true })
 }
 
-// From createFileOrDirectoryMixins
-const handleInputFocus = (): void => {
-  nextTick(() => {
-    if (input.value) {
-      input.value.focus()
-    }
-  })
-}
-
-const handleInputEnter = (): void => {
-  projectStore.CREATE_FILE_DIRECTORY(nameInputValue.value)
-}
-
 const focusTree = (): void => {
   treeWrapper.value?.focus()
 }
@@ -339,80 +212,17 @@ const focusTree = (): void => {
 // preventDefault stops the browser's default mousedown focus move (to <body>)
 // from undoing the focus() call.
 const handleTreeMouseDown = (event: MouseEvent): void => {
-  if (isEditableTarget(event.target)) return
-  if (event.button === 0) event.preventDefault()
+  const target = event.target as { tagName?: unknown; isContentEditable?: unknown } | null
+  if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable === true) return
+  if (event.button === 0) {
+    projectStore.CHANGE_ACTIVE_ITEM({})
+    event.preventDefault()
+  }
   focusTree()
 }
 
-// An inline input closing (rename commit / Escape) drops focus to <body>.
-const handleTreeFocusOut = (event: FocusEvent): void => {
-  if (!isNameInput(event.target)) return
-  nextTick(() => {
-    if (document.activeElement === document.body) focusTree()
-  })
-}
-
-const handleDocumentClick = (event: MouseEvent): void => {
-  const { target } = event
-  if (!target) return
-  if (isNameInput(target)) return
-
-  if (isInsideTreeScope(target) && !keepsSidebarSelection(target)) {
-    projectStore.CHANGE_ACTIVE_ITEM({})
-  }
-  projectStore.COMMIT_NAME_INPUT()
-}
-
-const handleDocumentContextMenu = (event: MouseEvent): void => {
-  const { target } = event
-  if (isNameInput(target)) return
-
-  // Right-clicking opens a native menu whose actions read the selection when
-  // clicked, so a rename committed here could leave the menu targeting the old
-  // path. Cancel the pending input instead (the pre-#3207 behavior); the
-  // click-away path above still commits.
-  projectStore.CLEAR_NAME_INPUT_STATE()
-}
-
 const handleTreeKeydown = (event: KeyboardEvent): void => {
-  const { target, key, metaKey } = event
-  const editableTarget = isEditableTarget(target)
-
-  if (key === 'Escape') {
-    projectStore.CLEAR_NAME_INPUT_STATE()
-    projectStore.CHANGE_ACTIVE_ITEM({})
-  }
-
-  const isEditingName = !!renameCache.value || !!createCacheDirname.value
-  const shouldRename = shouldRenameSelection({
-    key,
-    selection: activeItem.value,
-    projectRootPath: props.projectTree?.pathname,
-    pathSeparator: PATH_SEPARATOR,
-    isEditingName,
-    editableTarget
-  })
-  if (shouldRename) {
-    event.preventDefault()
-    event.stopPropagation()
-    return bus.emit('SIDEBAR::rename')
-  }
-
-  const shouldTrash = shouldTrashSelection({
-    key,
-    metaKey,
-    isMac,
-    selection: activeItem.value,
-    projectRootPath: props.projectTree?.pathname,
-    pathSeparator: PATH_SEPARATOR,
-    isEditingName,
-    editableTarget
-  })
-  if (shouldTrash) {
-    event.preventDefault()
-    event.stopPropagation()
-    return bus.emit('SIDEBAR::remove')
-  }
+  if (event.key === 'Escape') projectStore.CHANGE_ACTIVE_ITEM({})
 }
 
 // The row can arrive after the tab does: opening a project delivers its
@@ -436,41 +246,18 @@ watch(
 )
 
 onMounted(() => {
-  bus.on('SIDEBAR::show-new-input', handleInputFocus)
   bus.on('SIDEBAR::focus-tree', focusTree)
   bus.on('SIDEBAR::reveal-path', handleRevealPath)
-  // Capture phase: several click targets (project/collapse headings, editor
-  // tabs) call `@click.stop`, which would otherwise keep the click-away commit
-  // from running.
-  document.addEventListener('click', handleDocumentClick, true)
-  document.addEventListener('contextmenu', handleDocumentContextMenu)
   revealPath(editorStore.currentFile?.pathname)
 })
 
 onUnmounted(() => {
-  bus.off('SIDEBAR::show-new-input', handleInputFocus)
   bus.off('SIDEBAR::focus-tree', focusTree)
   bus.off('SIDEBAR::reveal-path', handleRevealPath)
-  document.removeEventListener('click', handleDocumentClick, true)
-  document.removeEventListener('contextmenu', handleDocumentContextMenu)
 })
 </script>
 
 <style scoped>
-.list-item {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.2s;
-}
-.list-enter, .list-leave-to
-  /* .list-leave-active for below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateX(-50px);
-}
 .tree-view {
   font-size: 14px;
   color: var(--sideBarColor);
@@ -499,53 +286,10 @@ onUnmounted(() => {
   transform: rotate(0);
 }
 
-.opened-files > .title,
 .project-tree > .title {
   height: 30px;
   line-height: 30px;
   font-size: 14px;
-}
-
-.opened-files .title {
-  padding-right: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.opened-files .title > span {
-  flex: 1;
-}
-
-.opened-files .title > a {
-  display: none;
-  text-decoration: none;
-  color: var(--sideBarColor);
-  margin-left: 8px;
-}
-.opened-files div.title:hover > a,
-.opened-files div.title > a:hover {
-  display: block;
-}
-
-.opened-files div.title:hover > a:hover,
-.opened-files div.title > a:hover:hover {
-  color: var(--highlightThemeColor);
-}
-.opened-files {
-  display: flex;
-  flex-direction: column;
-}
-.default-cursor {
-  cursor: pointer;
-}
-.opened-files .opened-files-list {
-  max-height: 112px;
-  overflow: auto;
-  flex: 1;
-}
-
-.opened-files .opened-files-list::-webkit-scrollbar:vertical {
-  width: 8px;
 }
 
 .project-tree {
@@ -553,6 +297,7 @@ onUnmounted(() => {
   flex-direction: column;
   overflow: auto;
   flex: 1;
+  min-height: 0;
 }
 
 .project-tree > .title {
@@ -566,32 +311,14 @@ onUnmounted(() => {
   user-select: none;
 }
 
-.project-tree > .title > a {
-  pointer-events: auto;
-  cursor: pointer;
-  margin-left: 8px;
-  color: var(--sideBarIconColor);
-  opacity: 0;
-}
-
-.project-tree > .title > a:hover {
-  color: var(--highlightThemeColor);
-}
-
-.project-tree > .title > a.active {
-  color: var(--highlightThemeColor);
-}
-
 .project-tree > .tree-wrapper {
   overflow: auto;
   flex: 1;
+  min-height: 0;
 }
 
 .project-tree > .tree-wrapper::-webkit-scrollbar:vertical {
   width: 8px;
-}
-.project-tree div.title:hover > a {
-  opacity: 1;
 }
 .open-project {
   flex: 1;
@@ -623,17 +350,6 @@ onUnmounted(() => {
 .empty-project .el-button.is-text.is-has-bg:focus {
   background-color: var(--buttonPrimaryBgColorHover);
   color: var(--buttonPrimaryFontColorHover);
-}
-.new-input {
-  outline: none;
-  height: 22px;
-  margin: 5px 0;
-  padding: 0 6px;
-  color: var(--sideBarColor);
-  border: 1px solid var(--focusColor);
-  background: var(--inputBgColor);
-  width: calc(100% - 45px);
-  border-radius: 3px;
 }
 .tree-wrapper {
   position: relative;
@@ -667,8 +383,5 @@ onUnmounted(() => {
   text-align: center;
   margin-top: 15px;
   text-decoration: none;
-}
-.bold {
-  font-weight: 600;
 }
 </style>

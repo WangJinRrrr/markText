@@ -70,7 +70,5 @@ export const registerFsHandlers = (): void => {
   ipcMain.handle('mt::fs::path-exists', (_e, p: string) => fs.pathExists(p))
   ipcMain.handle('mt::fs::unlink', (_e, p: string) => fs.unlink(p))
   ipcMain.handle('mt::fs::readdir', (_e, p: string) => fs.readdir(p))
-  // The same predicate the main process spawns by, or the preferences panel
-  // green-ticks a cliScript that then fails with EACCES.
   ipcMain.handle('mt::fs::is-executable', (_e, p: string) => isExecutableFile(p))
 }

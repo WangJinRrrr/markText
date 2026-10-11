@@ -14,9 +14,5 @@
   "cloudImages": {
     "description": "Images which you upload to cloud",
     "type": "array"
-  },
-  "currentUploader": {
-    "description": "The current image uploader",
-    "type": "string"
   }
 }

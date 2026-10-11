@@ -24,7 +24,6 @@
       "export": "Dışa Aktar",
       "exportHtml": "HTML Olarak Dışa Aktar",
       "exportPdf": "PDF Olarak Dışa Aktar",
-      "convertWithPandoc": "Pandoc ile dönüştür",
       "import": "İçe Aktar",
       "print": "Yazdır",
       "closeTab": "Sekmeyi Kapat",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "İçindekileri Aç/Kapat",
       "reloadImages": "Görselleri Yeniden Yükle",
       "showDeveloperTools": "Geliştirici Araçlarını Göster",
-      "reloadWindow": "Pencereyi Yeniden Yükle"
+      "reloadWindow": "Pencereyi Yeniden Yükle",
+      "notebookRepositoryManager": "Not defteri deposu yöneticisi"
     },
     "format": {
       "format": "Biçim",
@@ -439,8 +439,7 @@
         "plantumlServer": "PlantUML sunucu URL'si",
         "autoNormalizeLineEndings": "Dosyaları açarken yeni satır karakterlerini otomatik olarak normalleştir. Devre dışı bırakıldığında dosyalar olduğu gibi açılır.",
         "fileSortOrder": "Açık klasörlerdeki dosyaların sıralama düzeni: artan veya azalan.",
-        "openedFilesInSidebar": "Açık dosyaların kenar çubuğunda gösterilip gösterilmeyeceği.",
-        "showPandocConvert": "Pandoc dönüştürme menüsünü gösterir. Pandoc kurulu olmalıdır."
+        "openedFilesInSidebar": "Açık dosyaların kenar çubuğunda gösterilip gösterilmeyeceği."
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "Tüm açık dosya ve klasörleri geri yükle",
         "selectFolder": "Klasör Seç",
         "openBlankPage": "Boş sayfa aç"
-      },
-      "pandoc": {
-        "title": "Pandoc Dönüştürme",
-        "description": "Pandoc dönüştürme menüsünü göster",
-        "detailedDescription": "Pandoc kurulu olmalıdır",
-        "found": "Bulundu: {path}",
-        "notFound": "Bulunamadı",
-        "recheck": "Yeniden Denetle"
       },
       "sidebar": {
         "title": "Kenar Çubuğu",
@@ -593,7 +584,6 @@
     "image": {
       "title": "Görsel",
       "actions": {
-        "upload": "Buluta yükle",
         "folder": "Klasöre kopyala",
         "path": "Mutlak yolu kullan"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "Klasöre göre",
         "relativeFolderName": "Göreli klasör adı",
         "filenameNote": "Dosya adı otomatik olarak oluşturulacak."
-      },
-      "uploader": {
-        "title": "Görsel Yükleyici",
-        "currentUploader": "Geçerli Yükleyici: {name}",
-        "picgoNotInstalled": "PicGo yüklü değil",
-        "picgoInstalled": "PicGo yüklü",
-        "picgoDetectionFailed": "PicGo algılaması başarısız",
-        "debugInfo": "Hata Ayıklama Bilgisi",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "Yükleme yöntemini seçin:",
-        "retestPicgo": "Yeniden Test Et",
-        "lastDetectionTime": "Son Algılama Zamanı",
-        "picgoDetection": "PicGo Algılama",
-        "usageGuide": {
-          "title": "PicGo Temel Kullanım Kılavuzu",
-          "step1": "Yükleyiciyi Yapılandır",
-          "step1Description": "PicGo yükleyicisini yapılandırmak için aşağıdaki komutu kullanın:",
-          "step2": "Görselleri Yükle",
-          "step2Description": "Görselleri yüklemek için aşağıdaki komutu kullanın:",
-          "step3": "Yapılandırmayı Görüntüle",
-          "step3Description": "Geçerli yapılandırmayı görüntülemek için aşağıdaki komutu kullanın:",
-          "documentation": "Tam belgeleri görüntüle"
-        },
-        "lastSuccessTime": "Son başarı zamanı",
-        "neverDetected": "Hiç algılanmadı",
-        "neverSuccessful": "Hiç başarılı olmadı",
-        "scriptDescription": "Betik Açıklaması",
-        "scriptLocation": "Betik Konumu",
-        "save": "Kaydet",
-        "saveConfig": "Yapılandırmayı Kaydet",
-        "scriptConfigSaved": "Betik yapılandırması kaydedildi",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "CLI Betiği"
-        },
-        "pleaseInstall": "Lütfen yükleyin",
-        "scriptPath": "Betik yolu"
       },
       "defaultBehavior": "Görseli MarkText'e yapıştırdıktan veya sürükledikten sonraki varsayılan davranış"
     },
@@ -885,7 +836,8 @@
       "reloadImages": "Görselleri Yeniden Yükle",
       "textDirection": "Metin Yönü",
       "actualSize": "Gerçek Boyut",
-      "devToggleDeveloperTools": "Geliştirici Araçlarını Aç/Kapat"
+      "devToggleDeveloperTools": "Geliştirici Araçlarını Aç/Kapat",
+      "notebookRepositoryManager": "Not defteri deposu yöneticisi"
     },
     "tabs": {
       "cycleForward": "İleri Geç",

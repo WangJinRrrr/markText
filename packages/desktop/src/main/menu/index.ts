@@ -10,6 +10,7 @@ import { updateSelectionMenus, type SelectionState } from '../menu/actions/parag
 import { onInternalChannel } from '../utils/internalIpc'
 import { viewLayoutChanged } from '../menu/actions/view'
 import configureMenu, { configSettingMenu } from '../menu/templates'
+import fileMenuTemplate from '../menu/templates/file'
 import { setLanguage } from '../i18n.js'
 import type Preference from '../preferences'
 import type Keybindings from '../keyboard/shortcutHandler'
@@ -431,14 +432,19 @@ class AppMenu {
     })
   }
 
-  _buildEditorMenu(recentUsedDocuments: string[] | null = null): WindowMenuEntry {
-    if (!recentUsedDocuments) {
-      recentUsedDocuments = this.getRecentlyUsedDocuments()
-    }
-
-    const menuTemplate = configureMenu(this._keybindings, this._preferences, recentUsedDocuments)
+  _buildEditorMenu(_recentUsedDocuments: string[] | null = null): WindowMenuEntry {
+    const menuTemplate = configureMenu(this._keybindings, this._preferences)
     const menu = Menu.buildFromTemplate(menuTemplate)
     return { menu, type: MenuType.EDITOR }
+  }
+
+  getFileMenu(): Menu {
+    const template = fileMenuTemplate(
+      this._keybindings,
+      this._preferences,
+      this.getRecentlyUsedDocuments()
+    )
+    return Menu.buildFromTemplate(template.submenu as Electron.MenuItemConstructorOptions[])
   }
 
   _buildSettingMenu(): WindowMenuEntry {
@@ -578,9 +584,6 @@ class AppMenu {
       }
       if (prefs.texMathDollars !== undefined) {
         // The Paragraph menu lists Math Block only while the option is on.
-        this.updateAppMenu()
-      }
-      if (prefs.showPandocConvert !== undefined) {
         this.updateAppMenu()
       }
       if (prefs.language) {

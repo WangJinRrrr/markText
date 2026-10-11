@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: Yeni nesil markdown editörü :crescent_moon:</strong><br>
-  Sade ve zarif, açık kaynaklı, hız ve kullanılabilirliğe odaklı markdown editörü.<br>
+  <strong>:high_brightness: Hafif bir Markdown not defteri :crescent_moon:</strong><br>
+  Hızlı yazma ve açık dosya düzenine odaklanan, yerel öncelikli açık kaynaklı bir Markdown not defteri.<br>
   <sub>Linux, macOS ve Windows için kullanılabilir.</sub>
 </div>
 
@@ -126,13 +126,14 @@ MarkText, topluluğunun desteğiyle hayata geçirilmiş açık kaynaklı bir Mar
 ## Özellikler
 
 - Gerçek zamanlı önizleme (WYSIWYG) ve temiz, basit arayüz ile odaklanmış yazma deneyimi.
-- [CommonMark Spec](https://spec.commonmark.org), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) desteği ve seçici [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) desteği.
+- [CommonMark Spec](https://spec.commonmark.org) ve [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) desteği.
 - Matematiksel ifadeler (KaTeX), front matter ve emoji gibi Markdown uzantıları.
 - Yazma verimliliğinizi artırmak için paragraf ve satır içi stil kısayolları.
 - **HTML** ve **PDF** dosyası çıktısı.
 - Çeşitli [temalar](https://marktext.me/docs/themes): **Cadmium Light**, **Material Dark** vb.
 - Çeşitli düzenleme modları: **Kaynak Kodu modu**, **Daktilo modu**, **Odak modu**.
-- Görüntüleri doğrudan panodan yapıştırın.
+- Dosyalara göz atmak, oluşturmak, yeniden adlandırmak, kopyalamak, taşımak, silmek ve açmak için klavyeyle çağrılabilen not deposu yöneticisi (`Ctrl+Shift+F12` / `Cmd+Shift+F12`).
+- Klasör veya yol tabanlı yerel görüntü yönetimi ve panodan doğrudan yapıştırma.
 
 ## İndirme ve Kurulum
 

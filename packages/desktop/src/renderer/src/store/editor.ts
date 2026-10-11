@@ -840,20 +840,37 @@ export const useEditorStore = defineStore('editor', {
 
     /**
      * Update the pathname/filename of any tab whose pathname matches `src`.
-     * Invoked from the sidebar rename flow (project.ts:RENAME_IN_SIDEBAR).
      */
     RENAME_IF_NEEDED({ src, dest }: { src: string; dest: string }): void {
+      const normalizedSource = window.path.normalize(src)
+      const normalizedDestination = window.path.normalize(dest)
+      const currentPathBeforeRename = this.currentFile?.pathname
       this.tabs.forEach((tab) => {
-        if (isSamePath(tab.pathname, src)) {
-          tab.pathname = dest
-          tab.filename = window.path.basename(dest)
+        const normalizedTabPath = window.path.normalize(tab.pathname)
+        const isRenamed = isSamePath(tab.pathname, src)
+        const isDescendant = window.fileUtils.isChildOfDirectory(normalizedSource, normalizedTabPath)
+        if (isRenamed || isDescendant) {
+          const relativePath = isRenamed ? '' : window.path.relative(normalizedSource, normalizedTabPath)
+          const nextPath = relativePath
+            ? window.path.join(normalizedDestination, relativePath)
+            : normalizedDestination
+          tab.pathname = nextPath
+          tab.filename = window.path.basename(nextPath)
         }
       })
-      // Keep DIRNAME in sync when the active tab is the one being renamed,
-      // so link resolution / dirname-based lookups don't keep using the old
-      // folder until the user switches tabs.
-      if (this.currentFile != null && isSamePath(this.currentFile.pathname, dest)) {
-        window.DIRNAME = window.path.dirname(dest)
+      // Keep DIRNAME in sync when the active tab is one of the renamed paths,
+      // so link resolution keeps using the new directory immediately.
+      if (currentPathBeforeRename) {
+        const normalizedCurrent = window.path.normalize(currentPathBeforeRename)
+        const isCurrentRenamed = isSamePath(currentPathBeforeRename, src)
+        const isCurrentDescendant = window.fileUtils.isChildOfDirectory(normalizedSource, normalizedCurrent)
+        if (isCurrentRenamed || isCurrentDescendant) {
+          const relativePath = isCurrentRenamed ? '' : window.path.relative(normalizedSource, normalizedCurrent)
+          const nextPath = relativePath
+            ? window.path.join(normalizedDestination, relativePath)
+            : normalizedDestination
+          window.DIRNAME = window.path.dirname(nextPath)
+        }
       }
       debouncedSendBufferedState()
     },
@@ -1669,27 +1686,6 @@ export const useEditorStore = defineStore('editor', {
       })
     },
 
-    // Reads `currentFile.markdown` after a flush, the way `FILE_SAVE` does: in source-code
-    // mode CodeMirror writes straight to it, so `engine.getMarkdown()` would be stale (#5379).
-    EXPORT_PANDOC(target: string): void {
-      if (this.currentFile === null) return
-
-      this.flushActiveEditor()
-      const { pathname, markdown } = this.currentFile
-      const preferencesStore = usePreferencesStore()
-      window.electron.ipcRenderer.send('mt::response-pandoc-export', {
-        target,
-        markdown,
-        superSubScript: preferencesStore.superSubScript === true,
-        footnote: preferencesStore.footnote === true,
-        texMathDollars: preferencesStore.texMathDollars === true,
-        texMathGfm: preferencesStore.texMathGfm === true,
-        texMathSingleBackslash: preferencesStore.texMathSingleBackslash === true,
-        texMathDoubleBackslash: preferencesStore.texMathDoubleBackslash === true,
-        title: this.documentTitle,
-        pathname
-      })
-    },
 
     LISTEN_FOR_EXPORT_SUCCESS(): void {
       window.electron.ipcRenderer.on('mt::export-success', (_, payload) => {

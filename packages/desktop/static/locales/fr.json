@@ -24,7 +24,6 @@
       "export": "Exporter",
       "exportHtml": "Exporter en HTML",
       "exportPdf": "Exporter en PDF",
-      "convertWithPandoc": "Convertir avec Pandoc",
       "import": "Importer",
       "print": "Imprimer",
       "closeTab": "Fermer l'onglet",
@@ -124,7 +123,8 @@
       "toggleTableOfContents": "Basculer la table des matières",
       "reloadImages": "Recharger les images",
       "showDeveloperTools": "Afficher les outils de développement",
-      "reloadWindow": "Recharger la fenêtre"
+      "reloadWindow": "Recharger la fenêtre",
+      "notebookRepositoryManager": "Gestionnaire de dépôt de notes"
     },
     "format": {
       "format": "Format",
@@ -439,8 +439,7 @@
         "imageRelativeDirectoryBase": "Où les images relatives sont copiées",
         "imageRelativeDirectoryName": "Le nom du dossier d'image relatif",
         "fileSortOrder": "Ordre de tri des fichiers dans les dossiers ouverts : croissant ou décroissant.",
-        "openedFilesInSidebar": "Afficher ou non les fichiers ouverts dans la barre latérale.",
-        "showPandocConvert": "Afficher le menu de conversion Pandoc. Nécessite l'installation de Pandoc."
+        "openedFilesInSidebar": "Afficher ou non les fichiers ouverts dans la barre latérale."
       }
     },
     "categories": {
@@ -483,14 +482,6 @@
         "restoreAll": "Restaurer tous les fichiers et dossiers ouverts",
         "selectFolder": "Sélectionner un dossier",
         "openBlankPage": "Ouvrir une page vierge"
-      },
-      "pandoc": {
-        "title": "Conversion Pandoc",
-        "description": "Afficher le menu de conversion Pandoc",
-        "detailedDescription": "Nécessite l'installation de Pandoc",
-        "found": "Trouvé : {path}",
-        "notFound": "Introuvable",
-        "recheck": "Revérifier"
       },
       "sidebar": {
         "title": "Barre latérale",
@@ -593,7 +584,6 @@
     "image": {
       "title": "Image",
       "actions": {
-        "upload": "Télécharger vers le cloud",
         "folder": "Copier vers le dossier",
         "path": "Utiliser le chemin absolu"
       },
@@ -608,45 +598,6 @@
         "copyRelativeToFolder": "Relative au dossier",
         "relativeFolderName": "Nom du dossier relatif",
         "filenameNote": "Le nom de fichier sera généré automatiquement."
-      },
-      "uploader": {
-        "title": "Téléchargeur d'images",
-        "currentUploader": "Téléverseur actuel : {name}",
-        "picgoNotInstalled": "PicGo non installé",
-        "picgoInstalled": "PicGo installé",
-        "picgoDetectionFailed": "Échec de la détection PicGo",
-        "debugInfo": "Informations de débogage",
-        "npmInstallCommand": "npm install picgo -g",
-        "yarnInstallCommand": "yarn global add picgo",
-        "pnpmInstallCommand": "pnpm add -g picgo",
-        "chooseInstallMethod": "Choisir la méthode d'installation :",
-        "retestPicgo": "Retester",
-        "lastDetectionTime": "Dernière détection",
-        "usageGuide": {
-          "title": "Guide d'utilisation de base PicGo",
-          "step1": "Configurer l'uploader",
-          "step1Description": "Utilisez la commande suivante pour configurer l'uploader PicGo :",
-          "step2": "Télécharger des images",
-          "step2Description": "Utilisez la commande suivante pour télécharger des images :",
-          "step3": "Voir la configuration",
-          "step3Description": "Utilisez la commande suivante pour voir la configuration actuelle :",
-          "documentation": "Voir la documentation complète"
-        },
-        "scriptDescription": "Description du script",
-        "scriptLocation": "Emplacement du script",
-        "save": "Enregistrer",
-        "saveConfig": "Enregistrer la configuration",
-        "scriptConfigSaved": "Configuration du script enregistrée",
-        "services": {
-          "picgo": "PicGo",
-          "cliScript": "Script CLI"
-        },
-        "pleaseInstall": "Veuillez installer",
-        "scriptPath": "Chemin du script",
-        "picgoDetection": "Détection PicGo",
-        "lastSuccessTime": "Dernière heure de succès",
-        "neverDetected": "Jamais détecté",
-        "neverSuccessful": "Jamais réussi"
       },
       "defaultBehavior": "Comportement par défaut après avoir collé ou glissé une image dans MarkText"
     },
@@ -885,7 +836,8 @@
       "reloadImages": "Recharger les images",
       "textDirection": "Direction du texte",
       "actualSize": "Taille réelle",
-      "devToggleDeveloperTools": "Basculer les outils de développement"
+      "devToggleDeveloperTools": "Basculer les outils de développement",
+      "notebookRepositoryManager": "Gestionnaire de dépôt de notes"
     },
     "tabs": {
       "cycleForward": "Cycle vers l'avant",

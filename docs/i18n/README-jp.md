@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: 次世代の Markdown エディタ :crescent_moon:</strong><br>
-  スピードと使いやすさに特化した、シンプルでエレガントなオープンソースの Markdown エディタ。<br>
+  <strong>:high_brightness: 軽量な Markdown ノートブック :crescent_moon:</strong><br>
+  すばやい執筆と明快なファイル整理に重点を置いた、ローカル優先のオープンソース Markdown ノートブック。<br>
   <sub>Linux、macOS、Windows に対応。</sub>
 </div>
 
@@ -126,13 +126,14 @@ MarkText はコミュニティの支援によって成り立つオープンソ�
 ## 機能
 
 - リアルタイムプレビュー（WYSIWYG）とシンプルでクリーンなインターフェースで、集中して執筆できる体験を提供。
-- [CommonMark Spec](https://spec.commonmark.org)、[GitHub Flavored Markdown Spec](https://github.github.com/gfm/) に対応し、[Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) も部分的にサポート。
+- [CommonMark Spec](https://spec.commonmark.org) と [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) に対応。
 - 数式（KaTeX）、フロントマター、絵文字などの Markdown 拡張機能。
 - 段落とインラインスタイルのショートカットで執筆効率を向上。
 - **HTML** および **PDF** ファイルへの出力。
 - さまざまな[テーマ](https://marktext.me/docs/themes)：**Cadmium Light**、**Material Dark** など。
 - さまざまな編集モード：**ソースコードモード**、**タイプライターモード**、**フォーカスモード**。
-- クリップボードから直接画像を貼り付け。
+- キーボードで呼び出せるノートリポジトリ管理（`Ctrl+Shift+F12` / `Cmd+Shift+F12`）で、ファイルの閲覧、作成、名前変更、コピー、移動、削除、表示、オープンに対応。
+- フォルダーまたはパスによるローカル画像管理と、クリップボードからの直接貼り付け。
 
 ## ダウンロードとインストール
 

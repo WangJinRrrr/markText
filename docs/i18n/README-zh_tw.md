@@ -8,8 +8,8 @@
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness: 下一代 Markdown 編輯器 :crescent_moon:</strong><br>
-  一款專注於速度和易用性的簡潔優雅的開源 Markdown 編輯器。<br>
+  <strong>:high_brightness: 輕量 Markdown 筆記本 :crescent_moon:</strong><br>
+  一款本機優先、專注於快速寫作和清晰檔案管理的開源 Markdown 筆記本。<br>
   <sub>支援 Linux、macOS 和 Windows。</sub>
 </div>
 
@@ -126,13 +126,14 @@ MarkText 是一款由社群支持驅動的開源 Markdown 編輯器。如果 Mar
 ## 功能
 
 - 即時預覽（所見即所得）及簡潔清爽的界面，帶來無干擾的寫作體驗。
-- 支援 [CommonMark 規範](https://spec.commonmark.org)、[GitHub Flavored Markdown 規範](https://github.github.com/gfm/)，並選擇性支援 [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown)。
+- 支援 [CommonMark 規範](https://spec.commonmark.org) 與 [GitHub Flavored Markdown 規範](https://github.github.com/gfm/)。
 - 支援數學表達式（KaTeX）、Front Matter 和表情符號等 Markdown 擴展。
 - 支援段落和內聯樣式快捷方式，提升寫作效率。
 - 可匯出 **HTML** 和 **PDF** 文件。
 - 多種[主題](https://marktext.me/docs/themes)：**Cadmium Light**、**Material Dark** 等。
 - 多種編輯模式：**原始碼模式**、**打字機模式**、**專注模式**。
-- 支援直接從剪貼簿貼上圖片。
+- 提供可透過鍵盤叫出的筆記儲存庫管理器（`Ctrl+Shift+F12` / `Cmd+Shift+F12`），用於瀏覽、建立、重新命名、複製、移動、刪除、顯示和開啟儲存庫檔案。
+- 支援依資料夾或路徑管理本機圖片，也可直接從剪貼簿貼上圖片。
 
 ## 下載與安裝
 

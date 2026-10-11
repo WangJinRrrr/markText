@@ -14,7 +14,7 @@ Yes, MarkText is licensed under the [MIT](https://github.com/marktext/marktext/b
 
 ### Can I use MarkText as note management/taking app?
 
-MarkText is a pure markdown editor without features such as knowledge management and tags but yes, you can do this via the integrated filesystem explorer and task lists.
+MarkText is a lightweight, local-first Markdown notebook rather than a full knowledge-management platform. You can organize notes in repository folders with the notebook repository manager, browse them in the sidebar, and use Markdown task lists; tags and a separate cloud knowledge base are intentionally outside the app's scope.
 
 ### Where can I find documentation?
 

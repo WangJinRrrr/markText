@@ -8,8 +8,6 @@ export default function(
   keybindings: Keybindings,
   userPreference: Preference
 ): MenuItemConstructorOptions {
-  // A math block writes `$$…$$`, which the editor no longer reads back once
-  // pandoc's tex_math_dollars is off — so the entry goes away with it (#5446).
   const texMathDollars = userPreference.getItem<boolean>('texMathDollars') !== false
 
   return {

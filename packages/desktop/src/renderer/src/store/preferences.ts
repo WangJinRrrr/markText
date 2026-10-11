@@ -37,7 +37,6 @@ export interface PreferencesState {
   lastOpenedFolder: string
   treePathExcludePatterns: string[]
   language: string
-  showPandocConvert: boolean
 
   // ----- Editor / typography -----
   editorFontFamily: string
@@ -128,8 +127,6 @@ export interface PreferencesState {
   imageFolderPath: string
   webImages: unknown[]
   cloudImages: unknown[]
-  currentUploader: string
-  cliScript: string
 }
 
 interface SingleSetPreferencePayload {
@@ -165,7 +162,6 @@ export const usePreferencesStore = defineStore('preferences', {
     lastOpenedFolder: '',
     treePathExcludePatterns: [],
     language: 'en',
-    showPandocConvert: false,
 
     editorFontFamily: 'Open Sans',
     fontSize: 16,
@@ -253,8 +249,6 @@ export const usePreferencesStore = defineStore('preferences', {
     imageFolderPath: '',
     webImages: [],
     cloudImages: [],
-    currentUploader: 'picgo',
-    cliScript: ''
   }),
 
   getters: {

@@ -183,10 +183,6 @@ const fileUtilsAPI = {
   MARKDOWN_INCLUSIONS: bootInfo?.MARKDOWN_INCLUSIONS || []
 }
 
-const commandAPI = {
-  exists: (name: string) => invoke('mt::cmd::exists', name)
-}
-
 const i18nAPI = {
   loadTranslations: (language: string) => invoke('mt::i18n::load', language)
 }
@@ -220,10 +216,6 @@ const ripgrepAPI = {
     ipcRenderer.on('mt::rg::cancelled', sub)
     return () => ipcRenderer.removeListener('mt::rg::cancelled', sub)
   }
-}
-
-const uploaderAPI = {
-  uploadImage: (req: unknown) => invoke('mt::uploader::upload', req)
 }
 
 const fontsAPI = {
@@ -303,10 +295,8 @@ try {
   contextBridge.exposeInMainWorld('rgPath', bootInfo?.paths?.ripgrepBinary || '')
   contextBridge.exposeInMainWorld('fileUtils', fileUtilsAPI)
   contextBridge.exposeInMainWorld('path', pathAPI)
-  contextBridge.exposeInMainWorld('commandExists', commandAPI)
   contextBridge.exposeInMainWorld('i18nUtils', i18nAPI)
   contextBridge.exposeInMainWorld('ripgrep', ripgrepAPI)
-  contextBridge.exposeInMainWorld('uploader', uploaderAPI)
   contextBridge.exposeInMainWorld('fonts', fontsAPI)
   contextBridge.exposeInMainWorld('diagram', diagramAPI)
 } catch (error) {
