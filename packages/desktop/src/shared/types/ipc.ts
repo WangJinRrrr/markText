@@ -155,6 +155,7 @@ export interface IpcSendChannels {
   'mt::cmd-open-file': []
   'mt::cmd-open-folder': []
   'mt::cmd-toggle-autosave': []
+  'mt::close-directory': []
   'mt::editor-selection-changed': [windowId: number, state: unknown]
   'mt::format-link-click': [payload: { data: unknown; dirname: string }]
   'mt::get-current-language': []
@@ -284,6 +285,7 @@ export interface IpcMainEventChannels {
   'mt::menu::click': [menuId: string]
   'mt::menu::closed': []
   'mt::new-untitled-tab': [selected?: boolean, markdown?: string]
+  'mt::close-directory': []
   'mt::open-directory': [directoryPath: string]
   'mt::open-new-tab': [
     markdownDocument: MarkdownDocument | null,

@@ -205,7 +205,8 @@
       "rename": "Hernoemen",
       "moveToTrash": "Naar prullenbak",
       "copyPath": "Pad kopiëren",
-      "showInFolder": "Tonen in map"
+      "showInFolder": "Tonen in map",
+      "closeFolder": "Huidige map sluiten"
     },
     "tabs": {
       "close": "Sluiten",

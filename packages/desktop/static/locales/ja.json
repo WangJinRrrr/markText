@@ -205,7 +205,8 @@
       "rename": "名前の変更",
       "moveToTrash": "ごみ箱に移動",
       "copyPath": "パスのコピー",
-      "showInFolder": "フォルダーの表示"
+      "showInFolder": "フォルダーの表示",
+      "closeFolder": "現在のフォルダーを閉じる"
     },
     "tabs": {
       "close": "閉じる",

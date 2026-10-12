@@ -8,9 +8,16 @@ import type Preference from '../../preferences'
 export default function(
   keybindings: Keybindings,
   userPreference: Preference,
-  recentlyUsedFiles: string[]
+  recentlyUsedFiles: string[],
+  includeCloseFolder = false
 ): MenuItemConstructorOptions {
   const { autoSave } = userPreference.getAll()
+  const closeFolderMenuItem: MenuItemConstructorOptions = {
+    label: t('contextMenu.sideBar.closeFolder'),
+    click(_menuItem, browserWindow) {
+      actions.closeFolder((browserWindow as BrowserWindow | undefined) ?? null)
+    }
+  }
   const submenu: MenuItemConstructorOptions[] = [
     {
       label: t('menu.file.newTab'),
@@ -42,7 +49,11 @@ export default function(
       click(_menuItem, browserWindow) {
         actions.openFolder((browserWindow as BrowserWindow | undefined) ?? null)
       }
-    }
+    },
+    ...(includeCloseFolder
+      ? [{ type: 'separator' as const }]
+      : []),
+    ...(includeCloseFolder ? [closeFolderMenuItem] : [])
   ]
 
   const fileMenu: MenuItemConstructorOptions = {

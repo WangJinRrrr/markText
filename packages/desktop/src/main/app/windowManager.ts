@@ -409,6 +409,15 @@ class WindowManager extends TypedEmitter<WindowManagerEvents> {
       }
     })
 
+    ipcMain.on('mt::close-directory', (e) => {
+      const win = BrowserWindow.fromWebContents(e.sender)
+      if (!win) return
+      const editor = this.get(win.id) as EditorWindow | undefined
+      if (editor?.closeOpenedFolder()) {
+        win.webContents.send('mt::close-directory')
+      }
+    })
+
     ipcMain.on('mt::window-toggle-always-on-top', (e) => {
       const win = BrowserWindow.fromWebContents(e.sender)
       if (!win) return
@@ -418,6 +427,13 @@ class WindowManager extends TypedEmitter<WindowManagerEvents> {
     })
 
     // --- local events ---------------
+
+    onInternalChannel('window-close-opened-folder', (windowId: number) => {
+      const editor = this.get(windowId) as EditorWindow | undefined
+      if (editor?.closeOpenedFolder()) {
+        editor.browserWindow?.webContents.send('mt::close-directory')
+      }
+    })
 
     onInternalChannel('watcher-unwatch-all-by-id', (windowId: number) => {
       this._watcher.unwatchByWindowId(windowId)

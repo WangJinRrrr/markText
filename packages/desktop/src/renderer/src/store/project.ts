@@ -129,15 +129,26 @@ export const useProjectStore = defineStore('project', () => {
       if (projectTree.value?.pathname === rootDirectory) return
       OPEN_PROJECT(rootDirectory, { scheduleBufferUpdate: false })
     } else {
-      projectTree.value = null
-      pendingTreeEvents.value = []
-      activeItem.value = {}
+      CLOSE_PROJECT({ scheduleBufferUpdate: false })
     }
+  }
+
+  function CLOSE_PROJECT({ scheduleBufferUpdate = true }: OpenProjectOptions = {}): void {
+    projectTree.value = null
+    pendingTreeEvents.value = []
+    activeItem.value = {}
+    if (scheduleBufferUpdate) debouncedSendBufferedState()
   }
 
   function LISTEN_FOR_LOAD_PROJECT(): void {
     window.electron.ipcRenderer.on('mt::open-directory', (_e, pathname) => {
       OPEN_PROJECT(String(pathname))
+    })
+  }
+
+  function LISTEN_FOR_CLOSE_PROJECT(): void {
+    window.electron.ipcRenderer.on('mt::close-directory', () => {
+      CLOSE_PROJECT()
     })
   }
 
@@ -226,9 +237,11 @@ export const useProjectStore = defineStore('project', () => {
     treeVersion,
     pendingTreeEvents,
     OPEN_PROJECT,
+    CLOSE_PROJECT,
     CREATE_BUFFERED_STATE,
     RESTORE_BUFFERED_STATE,
     LISTEN_FOR_LOAD_PROJECT,
+    LISTEN_FOR_CLOSE_PROJECT,
     LISTEN_FOR_UPDATE_PROJECT,
     CHANGE_ACTIVE_ITEM,
     REVEAL_PATH,

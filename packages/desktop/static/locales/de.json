@@ -205,7 +205,8 @@
       "rename": "Umbenennen",
       "moveToTrash": "In Papierkorb verschieben",
       "copyPath": "Pfad kopieren",
-      "showInFolder": "Im Ordner anzeigen"
+      "showInFolder": "Im Ordner anzeigen",
+      "closeFolder": "Aktuellen Ordner schließen"
     },
     "tabs": {
       "close": "Schließen",

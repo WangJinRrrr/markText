@@ -442,7 +442,8 @@ class AppMenu {
     const template = fileMenuTemplate(
       this._keybindings,
       this._preferences,
-      this.getRecentlyUsedDocuments()
+      this.getRecentlyUsedDocuments(),
+      true
     )
     return Menu.buildFromTemplate(template.submenu as Electron.MenuItemConstructorOptions[])
   }

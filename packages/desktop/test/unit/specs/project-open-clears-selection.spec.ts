@@ -72,4 +72,16 @@ describe('OPEN_PROJECT resets sidebar state', () => {
     expect(store.activeItem).toEqual({})
     expect(store.projectTree?.pathname).toBe('/project-b')
   })
+
+  it('clears the project after its root is removed', () => {
+    const store = useProjectStore()
+
+    store.OPEN_PROJECT('/project-a')
+    store.CHANGE_ACTIVE_ITEM({ pathname: '/project-a/notes.md', isFile: true, isDirectory: false })
+    store.CLOSE_PROJECT({ scheduleBufferUpdate: false })
+
+    expect(store.projectTree).toBeNull()
+    expect(store.activeItem).toEqual({})
+    expect(store.pendingTreeEvents).toEqual([])
+  })
 })

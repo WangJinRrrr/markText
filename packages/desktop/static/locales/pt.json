@@ -205,7 +205,8 @@
       "rename": "Renomear",
       "moveToTrash": "Mover para Lixeira",
       "copyPath": "Copiar Caminho",
-      "showInFolder": "Mostrar na Pasta"
+      "showInFolder": "Mostrar na Pasta",
+      "closeFolder": "Fechar pasta atual"
     },
     "tabs": {
       "close": "Fechar",

@@ -205,7 +205,8 @@
       "rename": "Yeniden Adlandır",
       "moveToTrash": "Çöp Kutusuna Taşı",
       "copyPath": "Yolu Kopyala",
-      "showInFolder": "Klasörde Göster"
+      "showInFolder": "Klasörde Göster",
+      "closeFolder": "Geçerli klasörü kapat"
     },
     "tabs": {
       "close": "Kapat",

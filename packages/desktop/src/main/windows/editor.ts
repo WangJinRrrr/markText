@@ -375,6 +375,22 @@ class EditorWindow extends BaseWindow {
     }
   }
 
+  closeOpenedFolder(): boolean {
+    const openedRootDirectory = this._openedRootDirectory
+    if (!openedRootDirectory) return false
+
+    const openedFiles = this._openedFiles!.slice()
+    for (const filePath of openedFiles) {
+      if (isSamePathSync(filePath, openedRootDirectory) || isChildOfDirectory(openedRootDirectory, filePath)) {
+        this.removeFromOpenedFiles(filePath)
+      }
+    }
+    ipcMain.emit('watcher-unwatch-directory', this.browserWindow, openedRootDirectory)
+    this._openedRootDirectory = ''
+    this._accessor.preferences.setItems({ lastOpenedFolder: '' })
+    return true
+  }
+
   /**
    * Open a (new) directory and replaces the old one.
    */

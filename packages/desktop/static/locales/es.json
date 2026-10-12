@@ -205,7 +205,8 @@
       "rename": "Renombrar",
       "moveToTrash": "Mover a la Papelera",
       "copyPath": "Copiar Ruta",
-      "showInFolder": "Mostrar en Carpeta"
+      "showInFolder": "Mostrar en Carpeta",
+      "closeFolder": "Cerrar carpeta actual"
     },
     "tabs": {
       "close": "Cerrar",

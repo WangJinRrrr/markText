@@ -239,7 +239,7 @@
           <button
             class="icon-button"
             type="button"
-            :disabled="!selectedNode"
+            :disabled="!selectedNode || isSamePath(selectedNode.pathname, projectTree?.pathname ?? '')"
             title="Move selected item to trash"
             aria-label="Move selected item to trash"
             @click="removeSelected"

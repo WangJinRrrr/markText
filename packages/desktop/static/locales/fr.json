@@ -205,7 +205,8 @@
       "rename": "Renommer",
       "moveToTrash": "Déplacer vers la corbeille",
       "copyPath": "Copier le chemin",
-      "showInFolder": "Afficher dans le dossier"
+      "showInFolder": "Afficher dans le dossier",
+      "closeFolder": "Fermer le dossier actuel"
     },
     "tabs": {
       "close": "Fermer",

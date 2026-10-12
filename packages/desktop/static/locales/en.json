@@ -205,7 +205,8 @@
       "rename": "Rename",
       "moveToTrash": "Move To Trash",
       "copyPath": "Copy Path",
-      "showInFolder": "Show In Folder"
+      "showInFolder": "Show In Folder",
+      "closeFolder": "Close Current Folder"
     },
     "tabs": {
       "close": "Close",

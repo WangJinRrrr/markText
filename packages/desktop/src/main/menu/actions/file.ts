@@ -696,6 +696,10 @@ export const openFolder = async(win: BrowserWindow | null): Promise<void> => {
   }
 }
 
+export const closeFolder = (win: Win): void => {
+  if (win) ipcMain.emit('window-close-opened-folder', win.id)
+}
+
 export const openFileOrFolder = (
   win: BrowserWindow,
   pathname: string,
