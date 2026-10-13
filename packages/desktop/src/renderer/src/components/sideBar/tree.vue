@@ -11,6 +11,9 @@
     >
       <div
         class="title"
+        @contextmenu.prevent.stop="showFileMenu"
+        @dragover.prevent
+        @drop.prevent.stop="dropRoot"
       >
         <el-icon
           class="icon-arrow"
@@ -33,6 +36,8 @@
         class="tree-wrapper"
         tabindex="0"
         @contextmenu.prevent="showFileMenu"
+        @dragover.prevent
+        @drop.prevent.stop="dropRoot"
         @mousedown="handleTreeMouseDown"
         @keydown="handleTreeKeydown"
       >
@@ -99,10 +104,11 @@ import { ArrowRight } from '@element-plus/icons-vue'
 import { computeRevealScrollTop } from '@/util/revealTreeRow'
 import { TREE_ROW_REGISTRY_KEY, toRowKey, type TreeRowRegistry } from './rowRegistry'
 import type { TreeNode } from './types'
+import { showTreeMenu, createTreeItem, dropTreeItem } from './fileMenu'
 
 const { t } = useI18n()
 
-defineProps<{
+const props = defineProps<{
   // The project store seeds `projectTree` as `null` until a folder is
   // opened; the template renders the "open project" empty-state behind
   // `v-if="projectTree"`. Type the prop nullable to match runtime + the
@@ -133,14 +139,15 @@ const openFolder = (): void => {
 }
 
 const createFile = (): void => {
-  bus.emit('show-notebook-repository-manager')
+  if (props.projectTree) createTreeItem(props.projectTree.pathname, props.projectTree.pathname, 'file')
 }
 
 const showFileMenu = (event: MouseEvent): void => {
-  window.electron.ipcRenderer.send('mt::popup-file-menu', {
-    x: event.clientX,
-    y: event.clientY
-  })
+  if (props.projectTree) showTreeMenu(event, props.projectTree)
+}
+
+const dropRoot = (event: DragEvent): void => {
+  if (props.projectTree) dropTreeItem(event, props.projectTree)
 }
 
 const setShowDirectories = (value: boolean): void => {

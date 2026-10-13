@@ -43,12 +43,6 @@ export const showCommandPalette = (win: Win): void => {
   }
 }
 
-export const showNotebookRepositoryManager = (win: Win): void => {
-  if (win && win.webContents) {
-    win.webContents.send('mt::show-notebook-repository-manager')
-  }
-}
-
 export const toggleFocusMode = (win: Win): void => {
   toggleTypeMode(win, 'focus')
 }
@@ -87,7 +81,6 @@ export const reloadImageCache = (win: Win): void => {
 
 export const loadViewCommands = (commandManager: CommandManager): void => {
   commandManager.add(COMMANDS.VIEW_COMMAND_PALETTE, showCommandPalette)
-  commandManager.add(COMMANDS.VIEW_NOTEBOOK_REPOSITORY_MANAGER, showNotebookRepositoryManager)
   commandManager.add(COMMANDS.VIEW_FOCUS_MODE, toggleFocusMode)
   commandManager.add(COMMANDS.VIEW_FORCE_RELOAD_IMAGES, reloadImageCache)
   commandManager.add(COMMANDS.VIEW_SOURCE_CODE_MODE, toggleSourceCodeMode)

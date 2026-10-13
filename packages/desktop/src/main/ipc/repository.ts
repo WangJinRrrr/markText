@@ -12,7 +12,8 @@ const isOutside = (root: string, target: string): boolean => {
   return relative.startsWith('..') || path.isAbsolute(relative)
 }
 
-const resolveExisting = async(pathname: string): Promise<string> => fs.realpath(path.resolve(pathname))
+const resolveExisting = async(pathname: string): Promise<string> =>
+  fs.realpath(path.resolve(pathname))
 
 const resolveChild = async(root: string, pathname: string): Promise<string> => {
   const rootPath = await resolveExisting(root)
@@ -54,7 +55,9 @@ const listTree = async(pathname: string): Promise<RepositoryEntry> => {
   if (isDirectory) {
     const children = await fs.readdir(pathname)
     entry.children = []
-    for (const child of children.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))) {
+    for (const child of children.sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    )) {
       const childPath = path.join(pathname, child)
       if (child === 'node_modules' || child.endsWith('.asar')) continue
       entry.children.push(await listTree(childPath))
@@ -95,37 +98,78 @@ export const registerRepositoryHandlers = (): void => {
         : await dialog.showMessageBox(options)
       if (response !== 1) return false
     }
-    await shell.openPath(current)
+    const error = await shell.openPath(current)
+    if (error) throw new Error(error)
     return true
   })
 
-  register('mt::repository::create', async(_event, root: string, parent: string, name: string, type: 'file' | 'directory') => {
-    if (!name || /[/\\]/.test(name) || name === '.' || name === '..' || (type !== 'file' && type !== 'directory')) throw new Error('Invalid repository item.')
-    const target = await resolveChild(root, path.join(parent, name))
-    if (await fs.pathExists(target)) throw new Error('An item with that name already exists.')
-    if (type === 'directory') await fs.ensureDir(target)
-    else await fs.outputFile(target, '')
-  })
+  register(
+    'mt::repository::create',
+    async(_event, root: string, parent: string, name: string, type: 'file' | 'directory') => {
+      if (
+        !name ||
+        /[/\\]/.test(name) ||
+        name === '.' ||
+        name === '..' ||
+        (type !== 'file' && type !== 'directory')
+      )
+        throw new Error('Invalid repository item.')
+      const target = await resolveChild(root, path.join(parent, name))
+      if (await fs.pathExists(target)) throw new Error('An item with that name already exists.')
+      if (type === 'directory') await fs.ensureDir(target)
+      else await fs.outputFile(target, '')
+    }
+  )
 
   register('mt::repository::rename', async(_event, root: string, source: string, name: string) => {
-    if (!name || /[/\\]/.test(name) || name === '.' || name === '..') throw new Error('Invalid repository name.')
+    if (!name || /[/\\]/.test(name) || name === '.' || name === '..')
+      throw new Error('Invalid repository name.')
     const current = await resolveSource(root, source)
     const target = await resolveChild(root, path.join(path.dirname(current), name))
     if (await fs.pathExists(target)) throw new Error('An item with that name already exists.')
     await fs.move(current, target, { overwrite: false })
   })
 
-  register('mt::repository::copy', async(_event, root: string, source: string, parent: string, name: string, type: 'copy' | 'cut') => {
-    if (!name || /[/\\]/.test(name) || name === '.' || name === '..' || (type !== 'copy' && type !== 'cut')) {
-      throw new Error('Invalid repository operation.')
+  register(
+    'mt::repository::copy',
+    async(
+      _event,
+      root: string,
+      source: string,
+      parent: string,
+      name: string,
+      type: 'copy' | 'cut',
+      sourceRoot: string = root
+    ) => {
+      if (
+        !name ||
+        /[/\\]/.test(name) ||
+        name === '.' ||
+        name === '..' ||
+        (type !== 'copy' && type !== 'cut')
+      ) {
+        throw new Error('Invalid repository operation.')
+      }
+      const current = await resolveSource(sourceRoot, source)
+      const target = await resolveChild(root, path.join(parent, name))
+      ensureNotDescendant(current, target)
+      if (await fs.pathExists(target)) throw new Error('An item with that name already exists.')
+      if (type === 'cut') await fs.move(current, target, { overwrite: false })
+      else await fs.copy(current, target, { overwrite: false, errorOnExist: true })
     }
-    const current = await resolveSource(root, source)
-    const target = await resolveChild(root, path.join(parent, name))
-    ensureNotDescendant(current, target)
-    if (await fs.pathExists(target)) throw new Error('An item with that name already exists.')
-    if (type === 'cut') await fs.move(current, target, { overwrite: false })
-    else await fs.copy(current, target, { overwrite: false, errorOnExist: true })
-  })
+  )
+
+  register(
+    'mt::repository::import',
+    async(_event, root: string, source: string, parent: string) => {
+      const current = await resolveExisting(source)
+      const target = await resolveChild(root, path.join(parent, path.basename(current)))
+      ensureNotDescendant(current, target)
+      if (await fs.pathExists(target)) throw new Error('An item with that name already exists.')
+      await fs.move(current, target, { overwrite: false })
+      return target
+    }
+  )
 
   register('mt::repository::trash', async(event, root: string, target: string) => {
     const current = await resolveSource(root, target)

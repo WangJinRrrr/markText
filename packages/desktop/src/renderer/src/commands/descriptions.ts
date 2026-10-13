@@ -175,7 +175,6 @@ const COMMAND_KEY_MAP: Record<string, string> = {
 
   // View features
   'view.command-palette': 'commands.view.commandPalette',
-  'view.notebook-repository-manager': 'commands.view.notebookRepositoryManager',
   'view.actual-size': 'commands.view.actualSize',
   'view.text-direction': 'commands.view.textDirection',
 

@@ -27,7 +27,10 @@ vi.hoisted(() => {
         isAbsolute: (p: string) => boolean
         relative: (from: string, to: string) => string
       }
-      fileUtils?: { hasMarkdownExtension: (n: string) => boolean; pathExists: (p: string) => Promise<boolean> }
+      fileUtils?: {
+        hasMarkdownExtension: (n: string) => boolean
+        pathExists: (p: string) => Promise<boolean>
+      }
       electron?: { ipcRenderer: { send: (...a: unknown[]) => void; on: (...a: unknown[]) => void } }
     }
   }
@@ -71,6 +74,8 @@ describe('OPEN_PROJECT resets sidebar state', () => {
 
     expect(store.activeItem).toEqual({})
     expect(store.projectTree?.pathname).toBe('/project-b')
+    expect(store.projectTrees.map((tree) => tree.pathname)).toEqual(['/project-a', '/project-b'])
+    expect(store.CREATE_BUFFERED_STATE().rootDirectories).toEqual(['/project-a', '/project-b'])
   })
 
   it('clears the project after its root is removed', () => {

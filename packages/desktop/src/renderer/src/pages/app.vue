@@ -28,7 +28,6 @@
         :platform="platform"
       />
       <command-palette />
-      <notebook-repository-manager />
       <about-dialog />
       <export-setting-dialog />
       <rename />
@@ -48,7 +47,6 @@ import TitleBar from '@/components/titleBar/index.vue'
 import SideBar from '@/components/sideBar/index.vue'
 import AboutDialog from '@/components/about/index.vue'
 import CommandPalette from '@/components/commandPalette/index.vue'
-import NotebookRepositoryManager from '@/components/notebookRepositoryManager/index.vue'
 import ExportSettingDialog from '@/components/exportSettings/index.vue'
 import Rename from '@/components/rename/index.vue'
 import ImportModal from '@/components/import/index.vue'

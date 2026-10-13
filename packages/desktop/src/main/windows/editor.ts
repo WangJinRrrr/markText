@@ -43,7 +43,7 @@ interface RestoredTab {
 interface RestoredBufferState {
   tabs: RestoredTab[]
   restoreWarnings?: unknown[]
-  project?: { rootDirectory?: string }
+  project?: { rootDirectory?: string; rootDirectories?: string[] }
   [key: string]: unknown
 }
 
@@ -55,6 +55,7 @@ class EditorWindow extends BaseWindow {
   // Root directory and file list that are currently opened. These lists are
   // used to find the best window to open new files in.
   private _openedRootDirectory: string | null
+  private _openedRootDirectories: string[] = []
   private _openedFiles: string[] | null
 
   public bufferStoreInfo: BufferStoreInfo | null
@@ -74,6 +75,7 @@ class EditorWindow extends BaseWindow {
     // Root directory and file list that are currently opened. These lists are
     // used to find the best window to open new files in.
     this._openedRootDirectory = ''
+    this._openedRootDirectories = []
     this._openedFiles = []
 
     this.bufferStoreInfo = null
@@ -381,25 +383,31 @@ class EditorWindow extends BaseWindow {
 
     const openedFiles = this._openedFiles!.slice()
     for (const filePath of openedFiles) {
-      if (isSamePathSync(filePath, openedRootDirectory) || isChildOfDirectory(openedRootDirectory, filePath)) {
+      if (
+        this._openedRootDirectories.some(
+          (root) => isSamePathSync(filePath, root) || isChildOfDirectory(root, filePath)
+        )
+      ) {
         this.removeFromOpenedFiles(filePath)
       }
     }
-    ipcMain.emit('watcher-unwatch-directory', this.browserWindow, openedRootDirectory)
+    for (const root of this._openedRootDirectories)
+      ipcMain.emit('watcher-unwatch-directory', this.browserWindow, root)
+    this._openedRootDirectories = []
     this._openedRootDirectory = ''
     this._accessor.preferences.setItems({ lastOpenedFolder: '' })
     return true
   }
 
   /**
-   * Open a (new) directory and replaces the old one.
+   * Add a directory to the window workspace.
    */
   openFolder(pathname: string): void {
     // TODO: Don't allow new files if quitting.
     if (
       !pathname ||
       this.lifecycle === WindowLifecycle.QUITTED ||
-      isSamePathSync(pathname, this._openedRootDirectory ?? '')
+      this._openedRootDirectories.some((root) => isSamePathSync(pathname, root))
     ) {
       return
     }
@@ -408,13 +416,10 @@ class EditorWindow extends BaseWindow {
       const { browserWindow } = this
       const { menu: appMenu, preferences } = this._accessor
 
-      if (this._openedRootDirectory) {
-        ipcMain.emit('watcher-unwatch-directory', browserWindow, this._openedRootDirectory)
-      }
-
       preferences.setItems({ lastOpenedFolder: pathname })
       appMenu.addRecentlyUsedDocument(pathname)
-      this._openedRootDirectory = pathname
+      this._openedRootDirectory ||= pathname
+      this._openedRootDirectories.push(pathname)
       ipcMain.emit('watcher-watch-directory', browserWindow, pathname)
       browserWindow!.webContents.send('mt::open-directory', pathname)
     } else {
@@ -463,14 +468,14 @@ class EditorWindow extends BaseWindow {
    * Returns a score list for a given file list.
    */
   getCandidateScores(fileList: string[]): CandidateScore[] {
-    const { _openedFiles, _openedRootDirectory, id } = this
+    const { _openedFiles, id } = this
     const buf: CandidateScore[] = []
     for (const pathname of fileList) {
       let score = 0
       if (_openedFiles!.some((p) => p === pathname)) {
         score = -1
       } else {
-        if (isChildOfDirectory(_openedRootDirectory ?? '', pathname)) {
+        if (this._openedRootDirectories.some((root) => isChildOfDirectory(root, pathname))) {
           score += 5
         }
         for (const item of _openedFiles!) {
@@ -527,6 +532,7 @@ class EditorWindow extends BaseWindow {
     this._filesToOpen = null
     this._markdownToOpen = null
     this._openedRootDirectory = null
+    this._openedRootDirectories = []
     this._openedFiles = null
   }
 
@@ -589,10 +595,10 @@ class EditorWindow extends BaseWindow {
       if (!Array.isArray(bufferState.restoreWarnings)) {
         bufferState.restoreWarnings = []
       }
-      const rootDirectory = bufferState.project?.rootDirectory
-      if (rootDirectory) {
-        this.openFolder(rootDirectory)
-      }
+      const roots = bufferState.project?.rootDirectories ?? [
+        bufferState.project?.rootDirectory ?? ''
+      ]
+      for (const root of roots.filter(Boolean)) this.openFolder(root)
 
       // We still need to load the files of all opened tabs and check for errors/changed files
       const eol = preferences.getPreferredEol()

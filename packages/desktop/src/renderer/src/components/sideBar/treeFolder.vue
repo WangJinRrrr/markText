@@ -5,7 +5,12 @@
       :style="{ 'padding-left': `${depth * 6 + 10}px` }"
       :class="[{ active: isSamePath(activeItem?.pathname ?? '', folder.pathname) }]"
       :title="folder.pathname"
+      draggable="true"
       @click="folderNameClick"
+      @contextmenu.prevent.stop="showItemMenu($event, folder)"
+      @dragstart.stop="startTreeDrag($event, folder)"
+      @dragover.prevent
+      @drop.prevent.stop="dropTreeItem($event, folder)"
     >
       <el-icon
         class="icon-arrow"
@@ -37,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import { showItemMenu, startTreeDrag, dropTreeItem } from './fileMenu'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/store/project'

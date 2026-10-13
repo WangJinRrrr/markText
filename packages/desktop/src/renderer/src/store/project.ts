@@ -1,4 +1,4 @@
-import { nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import {
   addFile,
@@ -47,12 +47,20 @@ const createProjectRoot = (pathname: string): ProjectTree | null => {
 
 interface BufferedProjectState {
   rootDirectory: string
+  rootDirectories: string[]
 }
 
 const createBufferedProjectState = (state: unknown): BufferedProjectState => {
-  const s = (state || {}) as { rootDirectory?: string; projectTree?: { pathname?: string } }
+  const s = (state || {}) as {
+    rootDirectory?: string
+    rootDirectories?: string[]
+    projectTree?: { pathname?: string }
+  }
   return {
-    rootDirectory: normalizeProjectRoot(s.rootDirectory || s.projectTree?.pathname)
+    rootDirectory: normalizeProjectRoot(s.rootDirectory || s.projectTree?.pathname),
+    rootDirectories: (s.rootDirectories ?? [s.rootDirectory || s.projectTree?.pathname || ''])
+      .map(normalizeProjectRoot)
+      .filter(Boolean)
   }
 }
 
@@ -71,7 +79,13 @@ export const useProjectStore = defineStore('project', () => {
   // union breaks both the assignments and the field reads, so it stays a hatch.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const activeItem = ref<any>({})
-  const projectTree = ref<ProjectTree | null>(null)
+  const projectTrees = ref<ProjectTree[]>([])
+  const projectTree = computed<ProjectTree | null>({
+    get: () => projectTrees.value[projectTrees.value.length - 1] ?? null,
+    set: (tree) => {
+      projectTrees.value = tree ? [tree] : []
+    }
+  })
   const treeVersion = ref(0)
   const pendingTreeEvents = ref<PendingEvent[]>([])
 
@@ -80,9 +94,7 @@ export const useProjectStore = defineStore('project', () => {
   watch(
     [() => preferencesStore.fileSortBy, () => preferencesStore.fileSortOrder],
     ([sortBy, sortOrder]) => {
-      if (projectTree.value) {
-        resortTree(projectTree.value, String(sortBy), String(sortOrder))
-      }
+      for (const tree of projectTrees.value) resortTree(tree, String(sortBy), String(sortOrder))
     }
   )
 
@@ -94,8 +106,13 @@ export const useProjectStore = defineStore('project', () => {
     const tree = createProjectRoot(pathname)
     if (!tree) return
 
-    projectTree.value = tree
-    // The old tree's selection does not survive a new root.
+    if (
+      projectTrees.value.some(
+        (root) => normalizeProjectRoot(root.pathname) === normalizeProjectRoot(tree.pathname)
+      )
+    )
+      return
+    projectTrees.value.push(tree)
     activeItem.value = {}
 
     const layout = {
@@ -107,10 +124,21 @@ export const useProjectStore = defineStore('project', () => {
     layoutStore.DISPATCH_LAYOUT_MENU_ITEMS()
 
     // Process pending events that arrived before projectTree was initialized.
-    for (const event of pendingTreeEvents.value) {
-      _processTreeEvent(event.type, event.change)
-    }
+    const pending = pendingTreeEvents.value
     pendingTreeEvents.value = []
+    for (const event of pending) {
+      const tracked = projectTrees.value.some((root) => {
+        const relative = window.path.relative(root.pathname, event.change.pathname)
+        return (
+          relative !== '..' &&
+          !relative.startsWith('../') &&
+          !relative.startsWith('..\\') &&
+          !window.path.isAbsolute(relative)
+        )
+      })
+      if (tracked) _processTreeEvent(event.type, event.change)
+      else pendingTreeEvents.value.push(event)
+    }
 
     if (scheduleBufferUpdate) {
       debouncedSendBufferedState()
@@ -119,22 +147,22 @@ export const useProjectStore = defineStore('project', () => {
 
   function CREATE_BUFFERED_STATE(): BufferedProjectState {
     return createBufferedProjectState({
-      projectTree: projectTree.value
+      projectTree: projectTree.value,
+      rootDirectories: projectTrees.value.map((tree) => tree.pathname)
     })
   }
 
   function RESTORE_BUFFERED_STATE(state: unknown): void {
-    const { rootDirectory } = createBufferedProjectState(state)
-    if (rootDirectory) {
-      if (projectTree.value?.pathname === rootDirectory) return
-      OPEN_PROJECT(rootDirectory, { scheduleBufferUpdate: false })
+    const { rootDirectories } = createBufferedProjectState(state)
+    if (rootDirectories.length) {
+      for (const root of rootDirectories) OPEN_PROJECT(root, { scheduleBufferUpdate: false })
     } else {
       CLOSE_PROJECT({ scheduleBufferUpdate: false })
     }
   }
 
   function CLOSE_PROJECT({ scheduleBufferUpdate = true }: OpenProjectOptions = {}): void {
-    projectTree.value = null
+    projectTrees.value = []
     pendingTreeEvents.value = []
     activeItem.value = {}
     if (scheduleBufferUpdate) debouncedSendBufferedState()
@@ -165,30 +193,55 @@ export const useProjectStore = defineStore('project', () => {
 
   function _processTreeEvent(type: string, change: TreeChange): void {
     const editorStore = useEditorStore()
-    switch (type) {
-      case 'add':
-        addFile(projectTree.value!, change as Parameters<typeof addFile>[1], String(preferencesStore.fileSortBy), String(preferencesStore.fileSortOrder))
-        break
-      case 'unlink':
-        unlinkFile(projectTree.value!, change)
-        editorStore.SET_SAVE_STATUS_WHEN_REMOVE(change)
-        break
-      case 'addDir':
-        addDirectory(projectTree.value!, change)
-        break
-      case 'unlinkDir':
-        unlinkDirectory(projectTree.value!, change)
-        break
-      case 'change':
-        if (change?.mtimeMs !== undefined) {
-          updateFileMtime(projectTree.value!, change as Parameters<typeof updateFileMtime>[1], String(preferencesStore.fileSortBy), String(preferencesStore.fileSortOrder))
-        }
-        break
-      default:
-        if (window.electron?.process?.env?.NODE_ENV === 'development') {
-          console.log(`Unknown directory watch type: "${type}"`)
-        }
-        break
+    const trees = projectTrees.value.filter((tree) => {
+      const relative = window.path.relative(tree.pathname, change.pathname)
+      return (
+        relative !== '..' &&
+        !relative.startsWith('../') &&
+        !relative.startsWith('..\\') &&
+        !window.path.isAbsolute(relative)
+      )
+    })
+    if (!trees.length) {
+      pendingTreeEvents.value.push({ type, change })
+      return
+    }
+    for (const tree of trees) {
+      switch (type) {
+        case 'add':
+          addFile(
+            tree,
+            change as Parameters<typeof addFile>[1],
+            String(preferencesStore.fileSortBy),
+            String(preferencesStore.fileSortOrder)
+          )
+          break
+        case 'unlink':
+          unlinkFile(tree, change)
+          editorStore.SET_SAVE_STATUS_WHEN_REMOVE(change)
+          break
+        case 'addDir':
+          addDirectory(tree, change)
+          break
+        case 'unlinkDir':
+          unlinkDirectory(tree, change)
+          break
+        case 'change':
+          if (change?.mtimeMs !== undefined) {
+            updateFileMtime(
+              tree,
+              change as Parameters<typeof updateFileMtime>[1],
+              String(preferencesStore.fileSortBy),
+              String(preferencesStore.fileSortOrder)
+            )
+          }
+          break
+        default:
+          if (window.electron?.process?.env?.NODE_ENV === 'development') {
+            console.log(`Unknown directory watch type: "${type}"`)
+          }
+          break
+      }
     }
 
     // The mutations above are in place, so watchers need a counter to react to.
@@ -203,7 +256,7 @@ export const useProjectStore = defineStore('project', () => {
   /** Expands the folders leading to `pathname`; false when it is not in the tree. */
   function REVEAL_PATH(pathname: string | null | undefined): boolean {
     if (!pathname || !projectTree.value) return false
-    return expandAncestors(projectTree.value, pathname) !== null
+    return projectTrees.value.some((tree) => expandAncestors(tree, pathname) !== null)
   }
 
   function REVEAL_FILE_IN_SIDE_BAR(pathname?: string | null): void {
@@ -234,6 +287,7 @@ export const useProjectStore = defineStore('project', () => {
   return {
     activeItem,
     projectTree,
+    projectTrees,
     treeVersion,
     pendingTreeEvents,
     OPEN_PROJECT,

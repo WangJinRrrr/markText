@@ -1,8 +1,12 @@
 <template>
   <div
     class="editor-wrapper"
-    :class="[{ typewriter: typewriter, focus: focus, source: sourceCode, 'viewer-open': viewerOpen }]"
+    :class="[
+      { typewriter: typewriter, focus: focus, source: sourceCode, 'viewer-open': viewerOpen }
+    ]"
     :dir="textDirection"
+    @pointerdown.capture="activatePane"
+    @focusin="activatePane"
   >
     <div
       ref="editorRef"
@@ -69,7 +73,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, reactive, watch, onMounted, onBeforeUnmount, nextTick, markRaw } from 'vue'
+import {
+  computed,
+  ref,
+  shallowRef,
+  reactive,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  markRaw
+} from 'vue'
 import log from 'electron-log'
 import {
   Muya,
@@ -144,7 +158,7 @@ const STANDAR_Y = 320
 // it with a module-level flag — otherwise remounting this component in the same
 // renderer (window reuse / HMR) would register duplicate plugins and spawn
 // duplicate UI handlers. The per-plugin option closures (imageAction/jumpClick)
-// only read app-singleton Pinia stores, so capturing them once is correct.
+// resolve the active document from the window store.
 let muyaPluginsRegistered = false
 
 // The engine's `selection-change` / `json-change` payload. The consumed
@@ -171,6 +185,9 @@ const props = defineProps<{
   cursor?: unknown
   textDirection: string
   platform?: string
+  file?: import('@shared/types/files').IFileState
+  paneActive?: boolean
+  splitPane?: boolean
 }>()
 
 // Get stores
@@ -228,11 +245,44 @@ const {
   // Edit modes
   typewriter,
   focus,
-  sourceCode
+  sourceCode: preferenceSourceCode
 } = storeToRefs(preferencesStore)
+const sourceCode = computed(() => !props.splitPane && preferenceSourceCode.value)
 
 // Editor store refs
-const { currentFile, tabs } = storeToRefs(editorStore)
+const { tabs } = storeToRefs(editorStore)
+const currentFile = computed(() => props.file ?? editorStore.currentFile)
+const isActivePane = (): boolean => props.paneActive !== false
+const updatePaneToc = (toc: Parameters<typeof editorStore.UPDATE_TOC>[0]): void => {
+  if (isActivePane()) editorStore.UPDATE_TOC(toc)
+}
+const emit = defineEmits<{ activate: [] }>()
+const activatePane = (): void => {
+  if (isActivePane()) return
+  emit('activate')
+  if (editor.value) editorStore.UPDATE_TOC(editor.value.getTOC())
+}
+const paneListeners = new Map<string, Map<(payload: unknown) => void, (payload: unknown) => void>>()
+const listenPane = (name: string, handler: (payload: unknown) => void): void => {
+  const listener = (payload: unknown): void => {
+    if (name === 'language-changed' || name === 'invalidate-image-cache' || name === 'invalidate-tab-history' || name === 'flush-active-editor') {
+      handler(payload)
+      return
+    }
+    if (name === 'file-changed' || name === 'file-loaded') {
+      const id = (payload as { id?: string } | null)?.id
+      if (props.file && id !== props.file.id) return
+    } else if (!isActivePane()) return
+    handler(payload)
+  }
+  if (!paneListeners.has(name)) paneListeners.set(name, new Map())
+  paneListeners.get(name)!.set(handler, listener)
+  bus.on(name, listener)
+}
+const unlistenPane = (name: string, handler: (payload: unknown) => void): void => {
+  const listener = paneListeners.get(name)?.get(handler)
+  if (listener) bus.off(name, listener)
+}
 
 // Project store refs
 const { projectTree } = storeToRefs(projectStore)
@@ -277,6 +327,9 @@ let scrollHandler: ((e: Event) => void) | null = null
 // per-tab map here for restoration across in-session tab switches, and feed the
 // store a SYNTHETIC desktop-shaped history.
 const engineHistoryByTab = new Map<string, ISerializedHistory>()
+const invalidateTabHistory = (id: unknown): void => {
+  if (typeof id === 'string') engineHistoryByTab.delete(id)
+}
 
 // The WYSIWYG caret captured the instant the user switches INTO source mode.
 // Focus moves to CodeMirror while source mode is up, so by the time the tab is
@@ -378,13 +431,9 @@ const adaptSelectionChange = (changes: MuyaChange) => {
   const anchorBlock = changes.anchorBlock as { text?: string } | null | undefined
   const focusBlock = changes.focusBlock as { text?: string } | null | undefined
   const anchorInfo = changes.anchorBlockInfo as
-    | { type?: string; functionType?: string }
-    | null
-    | undefined
+    { type?: string; functionType?: string } | null | undefined
   const focusInfo = changes.focusBlockInfo as
-    | { type?: string; functionType?: string }
-    | null
-    | undefined
+    { type?: string; functionType?: string } | null | undefined
   const rawAffiliation = (changes.affiliation ?? []) as EngineAffiliationEntry[]
   const affiliation = rawAffiliation.map((entry) => {
     const functionType =
@@ -416,7 +465,7 @@ const setSelectionWordCountFromText = (selectedText: string) => {
   const hasSelection = selectedText.trim().length > 0
   if (!hasSelection && editorStore.selectionWordCount == null) return
 
-  editorStore.SET_SELECTION_WORD_COUNT(hasSelection ? muyaWordCount(selectedText) : null)
+  if (isActivePane()) editorStore.SET_SELECTION_WORD_COUNT(hasSelection ? muyaWordCount(selectedText) : null)
 }
 
 // Build a JSON-serializable cursor from the engine selection (drop the live
@@ -548,11 +597,14 @@ watch(sequenceTheme, (value, oldValue) => {
   }
 })
 
-watch(() => preferencesStore.plantumlServer, (value, oldValue) => {
-  if (value !== oldValue && editor.value) {
-    editor.value.setOptions({ plantumlServer: value }, true)
+watch(
+  () => preferencesStore.plantumlServer,
+  (value, oldValue) => {
+    if (value !== oldValue && editor.value) {
+      editor.value.setOptions({ plantumlServer: value }, true)
+    }
   }
-})
+)
 
 watch(listIndentation, (value, oldValue) => {
   if (value !== oldValue && editor.value) {
@@ -572,7 +624,7 @@ const applyOutlineAffectingOption = (options: Partial<IMuyaOptions>): void => {
   const muya = editor.value
   if (!muya) return
   muya.setOptions(options, true)
-  editorStore.REFRESH_TOC(muya.getTOC())
+  if (isActivePane()) editorStore.REFRESH_TOC(muya.getTOC())
 }
 
 watch(superSubScript, (value, oldValue) => {
@@ -837,8 +889,8 @@ const imageAction = async (
   alt: string = ''
 ): Promise<string> => {
   // TODO(Refactor): Refactor this method.
-  if (!currentFile.value) return ''
-  const { filename, pathname: currentPathname } = currentFile.value
+  if (!editorStore.currentFile) return ''
+  const { filename, pathname: currentPathname } = editorStore.currentFile
 
   // A pasted screenshot / bitmap clipboard comes in as a `data:` URL string
   // rather than a file path. `moveImageToFolder` treats any string as a local
@@ -963,6 +1015,7 @@ const SELECTION_KEYS = new Set([
 ])
 
 const keyup = (event: KeyboardEvent) => {
+  if (!isActivePane()) return
   if (!sourceCode.value && editor.value && SELECTION_KEYS.has(event.key)) {
     setSelectionWordCountFromText(editor.value.getSelectedText())
   }
@@ -1184,7 +1237,7 @@ const updateActiveHeading = (viewportY: number): void => {
     slug,
     top: el.getBoundingClientRect().top
   }))
-  editorStore.SET_ACTIVE_HEADING(findActiveHeadingSlug(positions, viewportY))
+  if (isActivePane()) editorStore.SET_ACTIVE_HEADING(findActiveHeadingSlug(positions, viewportY))
 }
 
 const scrollToCursor = (duration = 300) => {
@@ -1384,6 +1437,7 @@ const handlePrintServiceClearup = () => {
 // action (e.g. "Paragraph" inside a list/quote) fires no selection-change, so the
 // clicked checkbox menu item's auto-toggled OS checkmark would otherwise linger.
 const pushSelectionMenuState = (changes: MuyaChange) => {
+  if (!isActivePane()) return
   editorStore.SELECTION_CHANGE({
     ...adaptSelectionChange(changes),
     // Read the live block tree (O(1)) rather than getState(), which deep-clones
@@ -1463,6 +1517,7 @@ interface FileLoadedPayload {
 // listen for `open-single-file` event, it will call this method only when open a new file.
 const setMarkdownToEditor = (payload: unknown) => {
   const { id, markdown: newMarkdown, cursor: newCursor } = (payload ?? {}) as FileLoadedPayload
+  loadedDocumentId = id
   if (editor.value) {
     // `setContent` resets the document and clears the undo history; only set a
     // cursor afterwards (a freshly-opened file has no history to restore).
@@ -1487,10 +1542,16 @@ const setMarkdownToEditor = (payload: unknown) => {
     // `setContent` rebuilds the block tree synchronously but fires no
     // `json-change`, so seed the TOC explicitly (otherwise it stays empty until
     // the first edit, and a file switch keeps the previous file's TOC).
-    editorStore.UPDATE_TOC(editor.value.getTOC())
+    updatePaneToc(editor.value.getTOC())
     // A freshly created/opened tab should be ready to type into.
     if (editorStore.TAKE_OPEN_INTENT(currentFile.value?.pathname) !== false) focusFreshEditor()
   }
+}
+
+const replaceOutlineContent = (markdown: unknown): void => {
+  if (typeof markdown !== 'string' || !editor.value) return
+  editor.value.replaceContent(markdown)
+  updatePaneToc(editor.value.getTOC())
 }
 
 interface FileChangePayload {
@@ -1506,7 +1567,16 @@ interface FileChangePayload {
 }
 
 // listen for markdown change form source mode or change tabs etc
+let loadedDocumentId: string | undefined
+watch(() => props.file?.id, (id) => {
+  const file = props.file
+  if (!file || !editor.value || id === loadedDocumentId) return
+  handleFileChange({ ...file, id: file.id })
+}, { flush: 'post' })
 const handleFileChange = (payload: unknown) => {
+  const incoming = payload as FileChangePayload
+  if (props.file && incoming.id === loadedDocumentId && !incoming.isReload && incoming.markdown === editor.value?.getMarkdown()) return
+  if (props.file && (payload as { id?: string })?.id !== props.file.id) return
   const {
     id,
     markdown: newMarkdown,
@@ -1519,6 +1589,7 @@ const handleFileChange = (payload: unknown) => {
   if (!editor.value) return
   const container = getScrollContainer()
   if (!container) return
+  loadedDocumentId = id
 
   if (typeof newMarkdown === 'string') {
     // Returning from source-code mode: the WYSIWYG engine is never unmounted
@@ -1548,7 +1619,7 @@ const handleFileChange = (payload: unknown) => {
       // remapping below.
       editor.value.replaceContent(newMarkdown, preSourceModeSelection)
       preSourceModeSelection = null
-      editorStore.UPDATE_TOC(editor.value.getTOC())
+      updatePaneToc(editor.value.getTOC())
       // Map the CodeMirror `{ line, ch }` cursor onto a block-key cursor so the
       // WYSIWYG caret lands where the source-mode cursor was (PG2).
       editor.value.setCursorByOffset(muyaIndexCursor)
@@ -1570,7 +1641,7 @@ const handleFileChange = (payload: unknown) => {
         resetSyntheticHistory(id, newMarkdown)
       }
       editor.value.replaceContent(newMarkdown)
-      editorStore.UPDATE_TOC(editor.value.getTOC())
+      updatePaneToc(editor.value.getTOC())
       if (newCursor) {
         applyCursor(editor.value, newCursor)
       }
@@ -1583,7 +1654,7 @@ const handleFileChange = (payload: unknown) => {
       editor.value.setContent(newMarkdown)
       // Tab switch swaps content without firing `json-change`, so re-seed the
       // TOC (otherwise returning to an open tab keeps the other tab's TOC).
-      editorStore.UPDATE_TOC(editor.value.getTOC())
+      updatePaneToc(editor.value.getTOC())
       if (newCursor) {
         applyCursor(editor.value, newCursor)
       } else if (isIndexCursor(muyaIndexCursor)) {
@@ -1807,11 +1878,12 @@ onMounted(() => {
   const muya = markRaw(new Muya(ele, options))
   // The new engine requires an explicit init() after construction (it builds
   // the document tree and instantiates the registered UI plugins).
-  muya.init({ focus: editorStore.TAKE_OPEN_INTENT(currentFile.value?.pathname) !== false })
+  muya.init({ focus: isActivePane() && editorStore.TAKE_OPEN_INTENT(currentFile.value?.pathname) !== false })
   editor.value = muya
+  loadedDocumentId = currentFile.value?.id
   // The first document's content is set via constructor options, so no
   // `file-loaded` / `setMarkdownToEditor` runs for it — seed its TOC here.
-  editorStore.UPDATE_TOC(muya.getTOC())
+  updatePaneToc(muya.getTOC())
 
   // Seed the save-tracking baseline for the mount-loaded document (from the
   // engine's OWN serialization, same reason as setMarkdownToEditor). Without
@@ -1825,7 +1897,7 @@ onMounted(() => {
   const container = getScrollContainer()!
 
   // Listen for language changes and update the engine locale.
-  bus.on('language-changed', handleLanguageChanged)
+  listenPane('language-changed', handleLanguageChanged)
 
   // Create spell check wrapper and enable spell checking if preferred.
   spellchecker = new SpellChecker(spellcheckerEnabled.value, spellcheckerLanguage.value)
@@ -1839,38 +1911,40 @@ onMounted(() => {
   }
 
   // listen for bus events.
-  bus.on('file-loaded', setMarkdownToEditor)
-  bus.on('invalidate-image-cache', handleInvalidateImageCache)
-  bus.on('undo', handleUndo)
-  bus.on('redo', handleRedo)
-  bus.on('selectAll', handleSelectAll)
-  bus.on('export', handleExport)
-  bus.on('print-service-clearup', handlePrintServiceClearup)
-  bus.on('paragraph', handleEditParagraph)
-  bus.on('format', handleInlineFormat)
-  bus.on('searchValue', handleSearch)
-  bus.on('replaceValue', handReplace)
-  bus.on('find-action', handleFindAction)
-  bus.on('insert-image', insertImage)
-  bus.on('image-uploaded', handleUploadedImage)
-  bus.on('file-changed', handleFileChange)
-  bus.on('flush-active-editor', flushActiveEditor)
-  bus.on('editor-blur', blurEditor)
-  bus.on('editor-focus', focusEditor)
-  bus.on('copyAsRich', handleCopyPaste)
-  bus.on('copyAsHtml', handleCopyPaste)
-  bus.on('pasteAsPlainText', handleCopyPaste)
-  bus.on('duplicate', handleParagraph)
-  bus.on('createParagraph', handleParagraph)
-  bus.on('deleteParagraph', handleParagraph)
-  bus.on('insertParagraph', handleInsertParagraph)
-  bus.on('scroll-to-header', scrollToHeader)
-  bus.on('scroll-to-anchor-element', scrollToAnchorElement)
-  bus.on('screenshot-captured', handleScreenShot)
-  bus.on('show-command-palette', handleModalOpening)
-  bus.on('switch-spellchecker-language', switchSpellcheckLanguage)
-  bus.on('open-command-spellchecker-switch-language', openSpellcheckerLanguageCommand)
-  bus.on('replace-misspelling', replaceMisspelling)
+  listenPane('file-loaded', setMarkdownToEditor)
+  listenPane('invalidate-image-cache', handleInvalidateImageCache)
+  listenPane('undo', handleUndo)
+  listenPane('redo', handleRedo)
+  listenPane('selectAll', handleSelectAll)
+  listenPane('export', handleExport)
+  listenPane('print-service-clearup', handlePrintServiceClearup)
+  listenPane('paragraph', handleEditParagraph)
+  listenPane('format', handleInlineFormat)
+  listenPane('searchValue', handleSearch)
+  listenPane('replaceValue', handReplace)
+  listenPane('find-action', handleFindAction)
+  listenPane('insert-image', insertImage)
+  listenPane('image-uploaded', handleUploadedImage)
+  listenPane('file-changed', handleFileChange)
+  listenPane('invalidate-tab-history', invalidateTabHistory)
+  listenPane('outline-content-change', replaceOutlineContent)
+  listenPane('flush-active-editor', flushActiveEditor)
+  listenPane('editor-blur', blurEditor)
+  listenPane('editor-focus', focusEditor)
+  listenPane('copyAsRich', handleCopyPaste)
+  listenPane('copyAsHtml', handleCopyPaste)
+  listenPane('pasteAsPlainText', handleCopyPaste)
+  listenPane('duplicate', handleParagraph)
+  listenPane('createParagraph', handleParagraph)
+  listenPane('deleteParagraph', handleParagraph)
+  listenPane('insertParagraph', handleInsertParagraph)
+  listenPane('scroll-to-header', scrollToHeader)
+  listenPane('scroll-to-anchor-element', scrollToAnchorElement)
+  listenPane('screenshot-captured', handleScreenShot)
+  listenPane('show-command-palette', handleModalOpening)
+  listenPane('switch-spellchecker-language', switchSpellcheckLanguage)
+  listenPane('open-command-spellchecker-switch-language', openSpellcheckerLanguageCommand)
+  listenPane('replace-misspelling', replaceMisspelling)
 
   // The engine emits a low-level `json-change` ({ op, source, prevDoc, doc })
   // on every document mutation; the desktop's content-change pipeline wants the
@@ -2010,42 +2084,44 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  bus.off('file-loaded', setMarkdownToEditor)
-  bus.off('invalidate-image-cache', handleInvalidateImageCache)
-  bus.off('undo', handleUndo)
-  bus.off('redo', handleRedo)
-  bus.off('selectAll', handleSelectAll)
-  bus.off('export', handleExport)
-  bus.off('print-service-clearup', handlePrintServiceClearup)
-  bus.off('paragraph', handleEditParagraph)
-  bus.off('format', handleInlineFormat)
-  bus.off('searchValue', handleSearch)
-  bus.off('replaceValue', handReplace)
-  bus.off('find-action', handleFindAction)
-  bus.off('insert-image', insertImage)
-  bus.off('image-uploaded', handleUploadedImage)
-  bus.off('file-changed', handleFileChange)
-  bus.off('flush-active-editor', flushActiveEditor)
-  bus.off('editor-blur', blurEditor)
-  bus.off('editor-focus', focusEditor)
-  bus.off('copyAsRich', handleCopyPaste)
-  bus.off('copyAsHtml', handleCopyPaste)
-  bus.off('pasteAsPlainText', handleCopyPaste)
-  bus.off('duplicate', handleParagraph)
-  bus.off('createParagraph', handleParagraph)
-  bus.off('deleteParagraph', handleParagraph)
-  bus.off('insertParagraph', handleInsertParagraph)
-  bus.off('scroll-to-header', scrollToHeader)
-  bus.off('scroll-to-anchor-element', scrollToAnchorElement)
-  bus.off('screenshot-captured', handleScreenShot)
-  bus.off('show-command-palette', handleModalOpening)
-  bus.off('switch-spellchecker-language', switchSpellcheckLanguage)
-  bus.off('open-command-spellchecker-switch-language', openSpellcheckerLanguageCommand)
-  bus.off('replace-misspelling', replaceMisspelling)
-  bus.off('language-changed', handleLanguageChanged)
+  unlistenPane('file-loaded', setMarkdownToEditor)
+  unlistenPane('invalidate-image-cache', handleInvalidateImageCache)
+  unlistenPane('undo', handleUndo)
+  unlistenPane('redo', handleRedo)
+  unlistenPane('selectAll', handleSelectAll)
+  unlistenPane('export', handleExport)
+  unlistenPane('print-service-clearup', handlePrintServiceClearup)
+  unlistenPane('paragraph', handleEditParagraph)
+  unlistenPane('format', handleInlineFormat)
+  unlistenPane('searchValue', handleSearch)
+  unlistenPane('replaceValue', handReplace)
+  unlistenPane('find-action', handleFindAction)
+  unlistenPane('insert-image', insertImage)
+  unlistenPane('image-uploaded', handleUploadedImage)
+  unlistenPane('file-changed', handleFileChange)
+  unlistenPane('invalidate-tab-history', invalidateTabHistory)
+  unlistenPane('outline-content-change', replaceOutlineContent)
+  unlistenPane('flush-active-editor', flushActiveEditor)
+  unlistenPane('editor-blur', blurEditor)
+  unlistenPane('editor-focus', focusEditor)
+  unlistenPane('copyAsRich', handleCopyPaste)
+  unlistenPane('copyAsHtml', handleCopyPaste)
+  unlistenPane('pasteAsPlainText', handleCopyPaste)
+  unlistenPane('duplicate', handleParagraph)
+  unlistenPane('createParagraph', handleParagraph)
+  unlistenPane('deleteParagraph', handleParagraph)
+  unlistenPane('insertParagraph', handleInsertParagraph)
+  unlistenPane('scroll-to-header', scrollToHeader)
+  unlistenPane('scroll-to-anchor-element', scrollToAnchorElement)
+  unlistenPane('screenshot-captured', handleScreenShot)
+  unlistenPane('show-command-palette', handleModalOpening)
+  unlistenPane('switch-spellchecker-language', switchSpellcheckLanguage)
+  unlistenPane('open-command-spellchecker-switch-language', openSpellcheckerLanguageCommand)
+  unlistenPane('replace-misspelling', replaceMisspelling)
+  unlistenPane('language-changed', handleLanguageChanged)
 
   document.removeEventListener('keyup', keyup)
-  editorStore.SET_SELECTION_WORD_COUNT(null)
+  if (isActivePane()) editorStore.SET_SELECTION_WORD_COUNT(null)
 
   // Remove the manual scroll listener; engine `on(...)` listeners are torn down
   // by `destroy()` → `eventCenter.unsubscribeAll()`.
@@ -2139,5 +2215,4 @@ onBeforeUnmount(() => {
   padding-top: calc(50vh - 136px);
   padding-bottom: calc(50vh - 54px);
 }
-
 </style>

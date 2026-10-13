@@ -10,7 +10,12 @@
         active: isSamePath(activeItem?.pathname ?? '', file.pathname)
       }
     ]"
+    draggable="true"
     @click="handleFileClick"
+    @contextmenu.prevent.stop="showItemMenu($event, file)"
+    @dragstart.stop="startTreeDrag($event, file)"
+    @dragover.prevent
+    @drop.prevent.stop="dropTreeItem($event, file)"
     @dblclick="handleFileDblClick"
   >
     <file-icon :name="file.name" />
@@ -19,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+import { showItemMenu, startTreeDrag, dropTreeItem } from './fileMenu'
 import { inject, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/store/project'
@@ -75,7 +81,25 @@ const handleFileClick = (event: MouseEvent): void => {
 }
 
 const handleFileDblClick = (): void => {
-  if (!props.file.isMarkdown) return
+  if (!props.file.isMarkdown) {
+    const root = projectStore.projectTrees.find((tree) => {
+      const relative = window.path.relative(tree.pathname, props.file.pathname)
+      return (
+        relative !== '..' &&
+        !relative.startsWith('../') &&
+        !relative.startsWith('..\\') &&
+        !window.path.isAbsolute(relative)
+      )
+    })?.pathname
+    if (root) {
+      window.electron.ipcRenderer
+        .invoke('mt::repository::open', root, props.file.pathname)
+        .catch((error: unknown) => {
+          console.error('Failed to open file', error)
+        })
+    }
+    return
+  }
   editorStore.FOCUS_FILE(props.file.pathname)
 }
 

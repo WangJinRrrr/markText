@@ -58,6 +58,15 @@ describe('watcher awaitWriteFinish (#3955)', () => {
     expect(optionsForLastWatch().awaitWriteFinish).toBeFalsy()
   })
 
+  it('includes non-markdown files in directory watchers', () => {
+    watcher.watch(win as never, '/project', 'dir')
+    const ignored = optionsForLastWatch().ignored as (
+      pathname: string,
+      stats: { isDirectory: () => boolean }
+    ) => boolean
+    expect(ignored('/project/photo.png', { isDirectory: () => false })).toBe(false)
+  })
+
   it('keeps awaitWriteFinish for the file watcher (GH#1043)', () => {
     watcher.watch(win as never, '/project/note.md', 'file')
     expect(optionsForLastWatch().awaitWriteFinish).toEqual({

@@ -94,10 +94,9 @@ const add = async(
         return
       }
     }
-    win.webContents.send(EVENT_NAME[type], {
-      type: 'add',
-      change: file
-    })
+  }
+  if (isMarkdown || type === 'dir') {
+    win.webContents.send(EVENT_NAME[type], { type: 'add', change: file })
   }
 }
 
@@ -136,7 +135,13 @@ const change = async(
   if (isMarkdown) {
     try {
       const [data, stats] = await Promise.all([
-        loadMarkdownFile(pathname, endOfLine, autoGuessEncoding, trimTrailingNewline, autoNormalizeLineEndings),
+        loadMarkdownFile(
+          pathname,
+          endOfLine,
+          autoGuessEncoding,
+          trimTrailingNewline,
+          autoNormalizeLineEndings
+        ),
         fsPromises.stat(pathname)
       ])
       const file = { pathname, data, mtimeMs: stats.mtimeMs }
@@ -198,9 +203,8 @@ class Watcher {
   }
 
   watch(win: BrowserWindow, watchPath: string, type: WatchType = 'dir'): () => void {
-    const usePolling = isOsx || isUncPath(watchPath)
-      ? true
-      : this._preferences.getItem<boolean>('watcherUsePolling')
+    const usePolling =
+      isOsx || isUncPath(watchPath) ? true : this._preferences.getItem<boolean>('watcherUsePolling')
 
     const id = getUniqueId()
 
@@ -225,7 +229,7 @@ class Watcher {
         if (fileInfo.isDirectory()) {
           return false
         }
-        return !hasMarkdownExtension(pathname)
+        return type === 'file' && !hasMarkdownExtension(pathname)
       },
       ignoreInitial: type === 'file',
       persistent: true,
@@ -301,9 +305,7 @@ class Watcher {
       .on('addDir', (pathname: string) => addDir(win, pathname, type))
       .on('unlinkDir', (pathname: string) => unlinkDir(win, pathname, type))
       .on('raw', (event: string, subpath: string, details: unknown) => {
-        if (
-          globalThis.MARKTEXT_DEBUG_VERBOSE >= 3
-        ) {
+        if (globalThis.MARKTEXT_DEBUG_VERBOSE >= 3) {
           console.log('watcher: ', event, subpath, details)
         }
 
@@ -443,9 +445,7 @@ class Watcher {
             try {
               const fileInfo = await fsPromises.stat(pathname)
               if (fileInfo.mtime.getTime() - start.getTime() < duration) {
-                if (
-                  globalThis.MARKTEXT_DEBUG_VERBOSE >= 3
-                ) {
+                if (globalThis.MARKTEXT_DEBUG_VERBOSE >= 3) {
                   console.log(
                     `Ignoring file event after "stat": current="${currentTime.toISOString()}", start="${start.toISOString()}", file="${fileInfo.mtime.toISOString()}".`
                   )

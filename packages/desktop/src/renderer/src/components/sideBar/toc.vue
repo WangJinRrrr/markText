@@ -14,10 +14,13 @@
       :default-expanded-keys="expandedKeys"
       :current-node-key="activeNodeKey"
       highlight-current
+      :draggable="!sourceCode"
+      :allow-drop="allowDrop"
       :props="defaultProps"
       :expand-on-click-node="false"
       :indent="10"
       :icon="ArrowRight"
+      @node-drop="handleDrop"
       @node-click="handleClick"
       @node-expand="onExpand"
       @node-collapse="onCollapse"
@@ -42,6 +45,7 @@
 import { computed, ref, watch } from 'vue'
 import { useEditorStore } from '@/store/editor'
 import { usePreferencesStore } from '@/store/preferences'
+import { moveOutlineSection } from '@/util/moveOutlineSection'
 import { deriveKeyedToc, type KeyedTocNode } from '@/util/tocKeys'
 import { sanitize, TOC_DOMPURIFY_CONFIG } from '@/util/dompurify'
 import bus from '../../bus'
@@ -67,8 +71,7 @@ interface TocNodeData {
   labelHtml?: unknown
 }
 
-const plainLabel = (data: TocNodeData): string =>
-  typeof data.label === 'string' ? data.label : ''
+const plainLabel = (data: TocNodeData): string => (typeof data.label === 'string' ? data.label : '')
 
 const escapeHtml = (text: string): string =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -79,7 +82,7 @@ const labelHtmlOf = (data: TocNodeData): string => {
 }
 
 const { toc } = storeToRefs(editorStore)
-const { wordWrapInToc } = storeToRefs(preferencesStore)
+const { wordWrapInToc, sourceCode } = storeToRefs(preferencesStore)
 
 // Stable per-node key so el-tree preserves the user's expand/collapse state
 // across content edits (#3028) and tab switches (#3791). See deriveKeyedToc.
@@ -138,6 +141,27 @@ const activeNodeKey = computed<string>(() => {
 watch(activeNodeKey, (key) => {
   tocTreeRef.value?.setCurrentKey(key || undefined)
 })
+
+interface OutlineDragNode {
+  data: KeyedTocNode
+}
+const outlineIndex = (node: OutlineDragNode): number =>
+  editorStore.listToc.findIndex((heading) => heading.slug === node.data.slug)
+const allowDrop = (_source: OutlineDragNode, _target: OutlineDragNode, type: string): boolean =>
+  type !== 'inner'
+const handleDrop = (source: OutlineDragNode, target: OutlineDragNode, type: string): void => {
+  if (sourceCode.value) return
+  bus.emit('flush-active-editor')
+  const file = editorStore.currentFile
+  if (!file) return
+  const markdown = moveOutlineSection(
+    file.markdown,
+    outlineIndex(source),
+    outlineIndex(target),
+    type === 'after'
+  )
+  if (markdown !== file.markdown) bus.emit('outline-content-change', markdown)
+}
 
 const handleClick = (data: { slug?: unknown }): void => {
   // editor.vue resolves the slug to a heading by document order — bail out if

@@ -120,6 +120,19 @@ const getMarkdownAndCursor = (cm: CodeMirror.Editor) => {
  * This is to write the OLD content of the editor before switching to another tab
  * @param id
  */
+const flushSourceContent = (): void => {
+  if (!sourceCode.value || !tabId.value || !editor.value) return
+  if (commitTimer.value) clearTimeout(commitTimer.value)
+  const { markdown, cursor } = getMarkdownAndCursor(editor.value)
+  editorStore.LISTEN_FOR_CONTENT_CHANGE({ id: tabId.value, markdown, muyaIndexCursor: cursor })
+}
+
+const replaceOutlineContent = (markdown: unknown): void => {
+  if (typeof markdown !== 'string' || !sourceCode.value || !editor.value) return
+  editor.value.setValue(markdown)
+  flushSourceContent()
+}
+
 const prepareTabSwitch = () => {
   if (commitTimer.value) clearTimeout(commitTimer.value)
   if (tabId.value && editor.value) {
@@ -354,7 +367,7 @@ const listenChange = (cm: CodeMirror.Editor) => {
 // CodeMirror instead. Resolve the TOC entry to its heading line in the source.
 const handleScrollToHeader = (slug: unknown) => {
   if (!editor.value) return
-  const index = editorStore.listToc.findIndex(item => item.slug === slug)
+  const index = editorStore.listToc.findIndex((item) => item.slug === slug)
   if (index < 0) return
   const line = findMarkdownHeadingLine(editor.value.getValue(), index)
   if (line < 0) return
@@ -393,6 +406,8 @@ onMounted(() => {
 
   bus.on('file-loaded', handleFileChange)
   bus.on('file-changed', handleFileChange)
+  bus.on('outline-content-change', replaceOutlineContent)
+  bus.on('flush-active-editor', flushSourceContent)
   bus.on('selectAll', handleSelectAll)
   bus.on('undo', handleUndo)
   bus.on('redo', handleRedo)
@@ -430,6 +445,8 @@ onBeforeUnmount(() => {
 
   bus.off('file-loaded', handleFileChange)
   bus.off('file-changed', handleFileChange)
+  bus.off('outline-content-change', replaceOutlineContent)
+  bus.off('flush-active-editor', flushSourceContent)
   bus.off('selectAll', handleSelectAll)
   bus.off('undo', handleUndo)
   bus.off('redo', handleRedo)

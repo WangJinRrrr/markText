@@ -189,7 +189,7 @@ const showSearchOptions = ref(false)
 
 const { rightColumn, showSideBar } = storeToRefs(layoutStore)
 const { currentFile } = storeToRefs(editorStore)
-const { projectTree } = storeToRefs(projectStore)
+const { projectTree, projectTrees } = storeToRefs(projectStore)
 const {
   searchExclusions,
   searchMaxFileSize,
@@ -225,7 +225,7 @@ const search = (): void => {
     return
   }
 
-  const { pathname: rootDirectoryPath } = projectTree.value
+  const rootDirectoryPaths = projectTrees.value.map((root) => root.pathname)
 
   if (searcherRunning.value && searcherCancelCallback) {
     searcherCancelCallback()
@@ -247,7 +247,7 @@ const search = (): void => {
   const newSearchResult: SearchResult[] = []
   // Keep a handle on the cancellable thenable separately from the chained
   // `.then().catch()` (which is a plain `Promise<void>` and loses `cancel`).
-  const cancellable = ripgrepDirectorySearcher.search([rootDirectoryPath], keyword.value, {
+  const cancellable = ripgrepDirectorySearcher.search(rootDirectoryPaths, keyword.value, {
     didMatch: (res: unknown) => {
       if (canceled) return
       newSearchResult.push(res as SearchResult)

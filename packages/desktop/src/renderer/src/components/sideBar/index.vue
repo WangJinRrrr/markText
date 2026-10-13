@@ -21,10 +21,20 @@
       v-show="rightColumn"
       class="right-column"
     >
-      <tree
+      <div
         v-if="rightColumn === 'files'"
-        :project-tree="projectTree"
-      />
+        class="project-roots"
+      >
+        <tree
+          v-for="root in projectTrees"
+          :key="root.pathname"
+          :project-tree="root"
+        />
+        <tree
+          v-if="!projectTrees.length"
+          :project-tree="null"
+        />
+      </div>
       <side-bar-search v-else-if="rightColumn === 'search'" />
       <toc v-else-if="rightColumn === 'toc'" />
     </div>
@@ -56,7 +66,7 @@ const sideBarViewWidth = ref(280)
 
 const { rightColumn, showSideBar, sideBarWidth } = storeToRefs(layoutStore)
 
-const { projectTree } = storeToRefs(projectStore)
+const { projectTrees } = storeToRefs(projectStore)
 
 const finalSideBarWidth = computed<number>(() => {
   if (!showSideBar.value) return 0
@@ -114,10 +124,17 @@ const handleLeftIconClick = (name: string): void => {
     }
   }
 }
-
 </script>
 
 <style scoped>
+.project-roots {
+  height: 100%;
+  overflow: auto;
+}
+.project-roots :deep(.tree-view) {
+  height: auto;
+  min-height: 80px;
+}
 .side-bar {
   display: flex;
   flex-shrink: 0;

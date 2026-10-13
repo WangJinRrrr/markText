@@ -1,3 +1,4 @@
+import bus from '@/bus'
 import {
   SEPARATOR,
   getCloseThis,
@@ -57,6 +58,9 @@ export const showContextMenu = (event: ContextMenuClickEvent, tab: TabLike): voi
     closeOthers,
     closeSaved,
     closeAll,
+    SEPARATOR,
+    { label: '在右侧分屏编辑', click: () => bus.emit('split-note', tab.id) },
+    { label: '关闭分屏', click: () => bus.emit('close-note-split') },
     SEPARATOR,
     rename,
     copyPath,

@@ -589,12 +589,6 @@ const commands: CommandDescriptor[] = [
   // View
 
   {
-    id: 'view.notebook-repository-manager',
-    execute: async() => {
-      bus.emit('show-notebook-repository-manager')
-    }
-  },
-  {
     id: 'view.source-code-mode',
     execute: async() => {
       bus.emit('view:toggle-view-entry', 'sourceCode')

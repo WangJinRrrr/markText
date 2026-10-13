@@ -40,8 +40,7 @@ export interface SaveDialogRequest {
 }
 
 export type PlantumlFetchResult =
-  | { ok: true; mime: string; data: Uint8Array }
-  | { ok: false; error: string }
+  { ok: true; mime: string; data: Uint8Array } | { ok: false; error: string }
 
 export interface RepositoryEntry {
   pathname: string
@@ -97,9 +96,10 @@ export interface IpcInvokeChannels {
   'mt::paths::is-image': { args: [path: string]; ret: boolean }
   'mt::rg::start': { args: [req: unknown]; ret: { searchId: string } }
   'mt::repository::copy': {
-    args: [root: string, source: string, parent: string, name: string, type: 'copy' | 'cut']
+    args: [root: string, source: string, parent: string, name: string, type: 'copy' | 'cut', sourceRoot?: string]
     ret: void
   }
+  'mt::repository::import': { args: [root: string, source: string, parent: string]; ret: string }
   'mt::repository::list': { args: [root: string]; ret: RepositoryEntry }
   'mt::repository::open': { args: [root: string, target: string]; ret: boolean }
   'mt::repository::create': {
@@ -168,7 +168,9 @@ export interface IpcSendChannels {
   'mt::open-file-by-window-id': [windowId: number, filePath: string, options?: unknown]
   'mt::open-keybindings-config': []
   'mt::open-setting-window': []
-  'mt::rename': [payload: { id: string; pathname: string; newPathname: string; currentFile?: unknown }]
+  'mt::rename': [
+    payload: { id: string; pathname: string; newPathname: string; currentFile?: unknown }
+  ]
   'mt::request-keybindings': []
   'mt::set-editor-format-menus-enabled': [windowId: number, enabled: boolean]
   'mt::response-export': [
@@ -218,6 +220,7 @@ export interface IpcSendChannels {
   'mt::win::toggle-fullscreen': []
   'mt::win::toggle-maximize': []
   'mt::win::unmaximize': []
+  'mt::window-change-file-path': [pathname: string, oldPathname: string]
   'mt::window-add-file-path': [windowId: number, filePath: string]
   'mt::window-initialized': []
   'mt::window-tab-closed': [pathname: string]
@@ -303,7 +306,6 @@ export interface IpcMainEventChannels {
   'mt::set-pathname': [payload: { id: string; pathname: string; filename: string }]
   'mt::set-view-layout': [layout: unknown]
   'mt::show-command-palette': []
-  'mt::show-notebook-repository-manager': []
   'mt::show-export-dialog': [type: ExportType]
   'mt::show-notification': [payload: unknown]
   'mt::spelling-replace-misspelling': [payload: unknown]

@@ -76,10 +76,7 @@ interface AppMenuLike {
 }
 
 interface EditorBufferStoreLike {
-  handleClose(
-    restoreBufferId: string | undefined,
-    windows: { id: number; win: BaseWindow }[]
-  ): void
+  handleClose(restoreBufferId: string | undefined, windows: { id: number; win: BaseWindow }[]): void
 }
 
 class WindowManager extends TypedEmitter<WindowManagerEvents> {
@@ -400,6 +397,13 @@ class WindowManager extends TypedEmitter<WindowManagerEvents> {
       editor.openTab(filePath, options, true)
     })
 
+    ipcMain.on('mt::window-change-file-path', (event, pathname: string, oldPathname: string) => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return
+      const editor = this.get(win.id) as EditorWindow | undefined
+      editor?.changeOpenedFilePath(pathname, oldPathname)
+    })
+
     ipcMain.on('mt::window-tab-closed', (e, pathname: string) => {
       const win = BrowserWindow.fromWebContents(e.sender)
       if (!win) return
@@ -493,10 +497,6 @@ class WindowManager extends TypedEmitter<WindowManagerEvents> {
     })
 
     onInternalChannel('broadcast-preferences-changed', (prefs: Record<string, unknown>) => {
-      // We can not dynamic change the title bar style, so do not need to send it to renderer.
-      if (typeof prefs.titleBarStyle !== 'undefined') {
-        delete prefs.titleBarStyle
-      }
       if (Object.keys(prefs).length > 0) {
         for (const { browserWindow } of this._windows.values()) {
           browserWindow?.webContents.send('mt::user-preference', prefs)

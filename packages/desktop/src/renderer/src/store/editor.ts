@@ -119,7 +119,12 @@ interface AffiliationEntry {
 }
 
 interface SelectionChange {
-  start: { key: string; offset: number; block?: { text?: string; functionType?: string }; type?: string }
+  start: {
+    key: string
+    offset: number
+    block?: { text?: string; functionType?: string }
+    type?: string
+  }
   end: { key: string; offset: number; block?: { functionType?: string }; type?: string }
   affiliation?: AffiliationEntry[]
   hasFrontMatter?: boolean
@@ -848,12 +853,22 @@ export const useEditorStore = defineStore('editor', {
       this.tabs.forEach((tab) => {
         const normalizedTabPath = window.path.normalize(tab.pathname)
         const isRenamed = isSamePath(tab.pathname, src)
-        const isDescendant = window.fileUtils.isChildOfDirectory(normalizedSource, normalizedTabPath)
+        const isDescendant = window.fileUtils.isChildOfDirectory(
+          normalizedSource,
+          normalizedTabPath
+        )
         if (isRenamed || isDescendant) {
-          const relativePath = isRenamed ? '' : window.path.relative(normalizedSource, normalizedTabPath)
+          const relativePath = isRenamed
+            ? ''
+            : window.path.relative(normalizedSource, normalizedTabPath)
           const nextPath = relativePath
             ? window.path.join(normalizedDestination, relativePath)
             : normalizedDestination
+          if (autoSaveTimers.has(tab.id)) {
+            clearTimeout(autoSaveTimers.get(tab.id)!)
+            autoSaveTimers.delete(tab.id)
+          }
+          window.electron.ipcRenderer.send('mt::window-change-file-path', nextPath, tab.pathname)
           tab.pathname = nextPath
           tab.filename = window.path.basename(nextPath)
         }
@@ -863,9 +878,14 @@ export const useEditorStore = defineStore('editor', {
       if (currentPathBeforeRename) {
         const normalizedCurrent = window.path.normalize(currentPathBeforeRename)
         const isCurrentRenamed = isSamePath(currentPathBeforeRename, src)
-        const isCurrentDescendant = window.fileUtils.isChildOfDirectory(normalizedSource, normalizedCurrent)
+        const isCurrentDescendant = window.fileUtils.isChildOfDirectory(
+          normalizedSource,
+          normalizedCurrent
+        )
         if (isCurrentRenamed || isCurrentDescendant) {
-          const relativePath = isCurrentRenamed ? '' : window.path.relative(normalizedSource, normalizedCurrent)
+          const relativePath = isCurrentRenamed
+            ? ''
+            : window.path.relative(normalizedSource, normalizedCurrent)
           const nextPath = relativePath
             ? window.path.join(normalizedDestination, relativePath)
             : normalizedDestination
@@ -934,14 +954,8 @@ export const useEditorStore = defineStore('editor', {
             project: projectStore
           })
         )
-        bus.emit(
-          'cmd::register-command',
-          new LineEndingCommand(this)
-        )
-        bus.emit(
-          'cmd::register-command',
-          new TrailingNewlineCommand(this)
-        )
+        bus.emit('cmd::register-command', new LineEndingCommand(this))
+        bus.emit('cmd::register-command', new TrailingNewlineCommand(this))
 
         setTimeout(() => {
           window.electron.ipcRenderer.send('mt::request-keybindings')
@@ -1172,8 +1186,7 @@ export const useEditorStore = defineStore('editor', {
       this.updateTabIdToIndex() // Update before sending it out to prevent stale mappings.
 
       if (this.currentFile == null && this.tabs.length > 0) {
-        this.currentFile =
-          this.tabs[tabIndex] ?? this.tabs[tabIndex - 1] ?? this.tabs[0] ?? null
+        this.currentFile = this.tabs[tabIndex] ?? this.tabs[tabIndex - 1] ?? this.tabs[0] ?? null
         this.selectionWordCount = null
         if (this.currentFile && typeof this.currentFile.markdown === 'string') {
           const { id, markdown, cursor, history, pathname, scrollTop, blocks, muyaIndexCursor } =
@@ -1340,7 +1353,10 @@ export const useEditorStore = defineStore('editor', {
     NEW_UNTITLED_TAB({
       markdown: markdownString,
       selected
-    }: { markdown?: string; selected?: boolean }): void {
+    }: {
+      markdown?: string
+      selected?: boolean
+    }): void {
       if (selected == null) {
         selected = true
       }
@@ -1686,7 +1702,6 @@ export const useEditorStore = defineStore('editor', {
       })
     },
 
-
     LISTEN_FOR_EXPORT_SUCCESS(): void {
       window.electron.ipcRenderer.on('mt::export-success', (_, payload) => {
         const filePath = payload?.filePath ?? ''
@@ -1915,10 +1930,7 @@ const getRootFolderFromState = (projectStore: ProjectStoreLike): string => {
  * @param markdown The text to trim.
  * @param trimTrailingNewlineOption The option how we should trim the final newlines.
  */
-const adjustTrailingNewlines = (
-  markdown: string,
-  trimTrailingNewlineOption: number
-): string => {
+const adjustTrailingNewlines = (markdown: string, trimTrailingNewlineOption: number): string => {
   if (!markdown) {
     return ''
   }
@@ -2091,9 +2103,7 @@ const createApplicationMenuState = ({
 /**
  * Creates a object that contains the formats selection state.
  */
-export const createSelectionFormatState = (
-  formats: SelectionFormat[]
-): Record<string, boolean> => {
+export const createSelectionFormatState = (formats: SelectionFormat[]): Record<string, boolean> => {
   const state: Record<string, boolean> = {}
   for (const item of formats) {
     // Underline/superscript/subscript/highlight are carried as `html_tag`
